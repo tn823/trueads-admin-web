@@ -94,6 +94,8 @@
         }
     </style>
     <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
 </head>
 
 <body cz-shortcut-listen="true">
@@ -1864,68 +1866,102 @@
             <div class="content">
                 <link rel="stylesheet" href="./TrueAds Websites_files/index.css">
                 <script src="./TrueAds Websites_files/chart.js.download"></script>
-                <div class="content">
+                <div class="content in">
                     <div class="container-fluid">
                         <!-- Thống kê tổng quan -->
                         <div class="row">
                             <div class="col-lg-3 col-md-6 col-sm-6">
                                 <div class="small-box bg-info">
+                                    <div class="box-text">
                                     <div class="inner">
-                                        <h3 id="totalPages">0</h3>
                                         <p>Tổng số trang</p>
-                                    </div>
-                                    <div class="icon">
-                                        <i class="fas fa-file-alt"></i>
+                                        <h3 id="totalPages">0</h3>
                                     </div>
                                     <a href="https://dev-true-ads.trueads.ai/website/?page=pages"
                                         class="small-box-footer">
                                         Xem chi tiết <i class="fas fa-arrow-circle-right"></i>
                                     </a>
                                 </div>
+                                <div class="box-img">
+                                    <div class="box-img-inner">
+                                        <svg width="33px" height="32px">
+                                            <path fill-rule="evenodd" fill="rgb(255, 255, 255)"
+                                                d="M31.963,30.931 C31.818,31.160 31.609,31.342 31.363,31.455 C31.175,31.538 30.972,31.582 30.767,31.583 C30.429,31.583 30.102,31.463 29.845,31.243 L25.802,27.786 L21.758,31.243 C21.502,31.463 21.175,31.583 20.837,31.583 C20.498,31.583 20.172,31.463 19.915,31.243 L15.872,27.786 L11.829,31.243 C11.622,31.420 11.370,31.534 11.101,31.572 C10.832,31.609 10.558,31.569 10.311,31.455 C10.065,31.342 9.857,31.160 9.710,30.931 C9.565,30.703 9.488,30.437 9.488,30.167 L9.488,17.416 L2.395,17.416 C2.019,17.416 1.658,17.267 1.392,17.001 C1.126,16.736 0.976,16.375 0.976,16.000 L0.976,6.083 C0.976,4.580 1.574,3.139 2.639,2.076 C3.703,1.014 5.146,0.417 6.651,0.417 L26.511,0.417 C28.016,0.417 29.459,1.014 30.524,2.076 C31.588,3.139 32.186,4.580 32.186,6.083 L32.186,30.167 C32.186,30.437 32.109,30.703 31.963,30.931 ZM9.488,6.083 C9.488,5.332 9.189,4.611 8.657,4.080 C8.125,3.548 7.403,3.250 6.651,3.250 C5.898,3.250 5.177,3.548 4.645,4.080 C4.113,4.611 3.814,5.332 3.814,6.083 L3.814,14.583 L9.488,14.583 L9.488,6.083 ZM29.348,6.083 C29.348,5.332 29.050,4.611 28.517,4.080 C27.985,3.548 27.263,3.250 26.511,3.250 L11.559,3.250 C12.059,4.111 12.324,5.088 12.325,6.083 L12.325,27.092 L14.950,24.840 C15.207,24.620 15.534,24.500 15.872,24.500 C16.210,24.500 16.537,24.620 16.794,24.840 L20.837,28.296 L24.880,24.840 C25.137,24.620 25.463,24.500 25.802,24.500 C26.140,24.500 26.467,24.620 26.724,24.840 L29.348,27.092 L29.348,6.083 ZM25.092,20.250 L16.581,20.250 C16.205,20.250 15.844,20.101 15.578,19.835 C15.312,19.569 15.162,19.209 15.162,18.833 C15.162,18.457 15.312,18.097 15.578,17.831 C15.844,17.566 16.205,17.416 16.581,17.416 L25.092,17.416 C25.469,17.416 25.829,17.566 26.096,17.831 C26.362,18.097 26.511,18.457 26.511,18.833 C26.511,19.209 26.362,19.569 26.096,19.835 C25.829,20.101 25.469,20.250 25.092,20.250 ZM25.092,14.583 L16.581,14.583 C16.205,14.583 15.844,14.434 15.578,14.168 C15.312,13.903 15.162,13.542 15.162,13.167 C15.162,12.791 15.312,12.430 15.578,12.165 C15.844,11.899 16.205,11.750 16.581,11.750 L25.092,11.750 C25.469,11.750 25.829,11.899 26.096,12.165 C26.362,12.430 26.511,12.791 26.511,13.167 C26.511,13.542 26.362,13.903 26.096,14.168 C25.829,14.434 25.469,14.583 25.092,14.583 ZM25.092,8.916 L16.581,8.916 C16.205,8.916 15.844,8.767 15.578,8.501 C15.312,8.236 15.162,7.875 15.162,7.500 C15.162,7.124 15.312,6.764 15.578,6.498 C15.844,6.232 16.205,6.083 16.581,6.083 L25.092,6.083 C25.469,6.083 25.829,6.232 26.096,6.498 C26.362,6.764 26.511,7.124 26.511,7.500 C26.511,7.875 26.362,8.236 26.096,8.501 C25.829,8.767 25.469,8.916 25.092,8.916 Z">
+                                            </path>
+                                        </svg>
+                                    </div>
+                                </div>
+                                </div>
                             </div>
                             <div class="col-lg-3 col-md-6 col-sm-6">
                                 <div class="small-box bg-success">
-                                    <div class="inner">
-                                        <h3 id="totalPosts">0</h3>
-                                        <p>Tổng số bài viết</p>
+                                    <div class="box-text">
+                                        <div class="inner">
+                                            <p>Tổng số bài viết</p>
+                                            <h3 id="totalPosts">0</h3>
+                                            <a href="https://dev-true-ads.trueads.ai/website/?page=posts" class="small-box-footer">
+                                                Xem chi tiết <i class="fa-solid fa-circle-arrow-right"></i></i>
+                                            </a>
+                                        </div>
                                     </div>
-                                    <div class="icon">
-                                        <i class="fas fa-newspaper"></i>
+                                    <div class="box-img">
+                                        <div class="box-img-inner">
+                                            <svg width="35px" height="34px">
+                                                <path fill-rule="evenodd" fill="rgb(255, 255, 255)"
+                                                    d="M32.482,9.730 C31.092,6.789 28.892,4.319 26.120,2.586 C22.265,0.183 17.698,-0.580 13.271,0.442 C8.843,1.458 5.074,4.140 2.668,7.990 C0.255,11.840 -0.509,16.394 0.514,20.822 C1.538,25.244 4.224,29.008 8.072,31.411 C10.785,33.104 13.896,34.000 17.080,34.000 L17.286,34.000 C20.456,33.960 23.541,33.044 26.213,31.358 C26.991,30.866 27.217,29.844 26.725,29.067 C26.234,28.291 25.210,28.065 24.432,28.556 C22.285,29.917 19.799,30.654 17.246,30.687 C14.627,30.720 12.067,29.997 9.834,28.609 C6.730,26.671 4.569,23.644 3.752,20.085 C2.934,16.527 3.546,12.863 5.486,9.763 C9.488,3.370 17.957,1.418 24.359,5.414 C26.592,6.808 28.360,8.793 29.477,11.157 C30.568,13.460 30.993,16.016 30.707,18.539 C30.607,19.448 31.259,20.271 32.177,20.371 C33.087,20.470 33.911,19.820 34.011,18.904 C34.363,15.764 33.832,12.591 32.482,9.730 L32.482,9.730 Z">
+                                                </path>
+                                                <path fill-rule="evenodd" fill="rgb(255, 255, 255)"
+                                                    d="M22.593,11.237 L14.575,19.244 L11.604,16.277 C10.952,15.626 9.902,15.626 9.250,16.277 C8.599,16.927 8.599,17.976 9.250,18.627 L13.399,22.770 C13.725,23.095 14.150,23.254 14.575,23.254 C15.001,23.254 15.427,23.095 15.753,22.770 L24.940,13.588 C25.592,12.937 25.592,11.888 24.940,11.237 C24.289,10.593 23.238,10.593 22.593,11.237 L22.593,11.237 Z">
+                                                </path>                                 </svg>
+                                        </div>
                                     </div>
-                                    <a href="https://dev-true-ads.trueads.ai/website/?page=posts"
-                                        class="small-box-footer">
-                                        Xem chi tiết <i class="fas fa-arrow-circle-right"></i>
-                                    </a>
+                                    
                                 </div>
                             </div>
                             <div class="col-lg-3 col-md-6 col-sm-6">
                                 <div class="small-box bg-warning">
+                                    <div class="box-text">
                                     <div class="inner">
-                                        <h3 id="totalComments">0</h3>
                                         <p>Bình luận</p>
+                                        <h3 id="totalComments">0</h3>
+                                        
                                     </div>
-                                    <div class="icon">
-                                        <i class="fas fa-comments"></i>
-                                    </div>
+                                  
                                     <a href="https://dev-true-ads.trueads.ai/website/?page=comments"
                                         class="small-box-footer">
                                         Xem chi tiết <i class="fas fa-arrow-circle-right"></i>
                                     </a>
                                 </div>
+                                <div class="box-img ">
+                                    <div class="box-img-inner">
+                                        <svg fill="#000000" width="40px" height="40px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M12,2A10,10,0,0,0,2,12a9.89,9.89,0,0,0,2.26,6.33l-2,2a1,1,0,0,0-.21,1.09A1,1,0,0,0,3,22h9A10,10,0,0,0,12,2Zm0,18H5.41l.93-.93a1,1,0,0,0,0-1.41A8,8,0,1,1,12,20Z" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                </div>
                             </div>
                             <div class="col-lg-3 col-md-6 col-sm-6">
                                 <div class="small-box bg-danger">
-                                    <div class="inner">
-                                        <h3 id="totalMedia">0</h3>
-                                        <p>Thư viện ảnh</p>
+                                    <div class="box-text">
+                                        <div class="inner">
+                                            <p>Thư viện ảnh</p>
+                                            <h3 id="totalMedia">0</h3>
+                                        
+                                        </div>
+                                        <a href="https://dev-true-ads.trueads.ai/website/?page=media" class="small-box-footer">
+                                            Xem chi tiết <i class="fas fa-arrow-circle-right"></i></a>
                                     </div>
-                                    <div class="icon">
-                                        <i class="fas fa-images"></i>
+                                    <div class="box-img">
+                                        <div class="box-img-inner">
+                                            <svg width="35px" height="35px" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                                    d="M2.5 1H12.5C13.3284 1 14 1.67157 14 2.5V12.5C14 13.3284 13.3284 14 12.5 14H2.5C1.67157 14 1 13.3284 1 12.5V2.5C1 1.67157 1.67157 1 2.5 1ZM2.5 2C2.22386 2 2 2.22386 2 2.5V8.3636L3.6818 6.6818C3.76809 6.59551 3.88572 6.54797 4.00774 6.55007C4.12975 6.55216 4.24568 6.60372 4.32895 6.69293L7.87355 10.4901L10.6818 7.6818C10.8575 7.50607 11.1425 7.50607 11.3182 7.6818L13 9.3636V2.5C13 2.22386 12.7761 2 12.5 2H2.5ZM2 12.5V9.6364L3.98887 7.64753L7.5311 11.4421L8.94113 13H2.5C2.22386 13 2 12.7761 2 12.5ZM12.5 13H10.155L8.48336 11.153L11 8.6364L13 10.6364V12.5C13 12.7761 12.7761 13 12.5 13ZM6.64922 5.5C6.64922 5.03013 7.03013 4.64922 7.5 4.64922C7.96987 4.64922 8.35078 5.03013 8.35078 5.5C8.35078 5.96987 7.96987 6.35078 7.5 6.35078C7.03013 6.35078 6.64922 5.96987 6.64922 5.5ZM7.5 3.74922C6.53307 3.74922 5.74922 4.53307 5.74922 5.5C5.74922 6.46693 6.53307 7.25078 7.5 7.25078C8.46693 7.25078 9.25078 6.46693 9.25078 5.5C9.25078 4.53307 8.46693 3.74922 7.5 3.74922Z"
+                                                    fill="#000000" />                                        </svg>
+                                        </div>
                                     </div>
-                                    <a href="https://dev-true-ads.trueads.ai/website/?page=media"
-                                        class="small-box-footer">
-                                        Xem chi tiết <i class="fas fa-arrow-circle-right"></i>
-                                    </a>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -1934,62 +1970,148 @@
                         <div class="row">
                             <div class="col-lg-3 col-md-6 col-sm-6">
                                 <div class="small-box bg-gradient-primary">
+                                    <div class="box-text">
                                     <div class="inner">
-                                        <h3 id="publishedPages">0</h3>
                                         <p>Trang đã xuất bản</p>
-                                    </div>
-                                    <div class="icon">
-                                        <i class="fas fa-check-circle"></i>
+                                        <h3 id="publishedPages">0</h3>
+                                       
                                     </div>
                                     <a href="https://dev-true-ads.trueads.ai/website/?page=pages&amp;status=publish"
                                         class="small-box-footer">
                                         Xem chi tiết <i class="fas fa-arrow-circle-right"></i>
                                     </a>
                                 </div>
+                                <div class="box-img">
+                                    <div class="box-img-inner">
+                                        <svg version="1.1" id="PAGE" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="35px"
+                                            height="35px" viewBox="0 0 1800 1800" enable-background="new 0 0 1800 1800" xml:space="preserve">
+                                            <g>
+                                                <path fill="#333333"
+                                                    d="M1720.335,5.563H85.245c-43.937,0-79.679,35.739-79.679,79.667v1635.1c0,43.928,35.743,79.67,79.679,79.67
+                                        		h1635.09c43.927,0,79.665-35.742,79.665-79.67V85.23C1800,41.302,1764.262,5.563,1720.335,5.563z M85.245,68.575h1635.09
+                                        		c9.182,0,16.653,7.473,16.653,16.655v195.532H68.578V85.23C68.578,76.048,76.055,68.575,85.245,68.575z M1720.335,1736.988H85.245
+                                        		c-9.19,0-16.667-7.472-16.667-16.658V343.774h1668.41V1720.33C1736.988,1729.517,1729.517,1736.988,1720.335,1736.988z" />
+                                                <path fill="#333333" d="M1518.679,1150.928H333.948c-47.154,0-85.517,38.363-85.517,85.517v315.061
+                                        		c0,47.152,38.363,85.516,85.517,85.516h1184.73c47.154,0,85.518-38.363,85.518-85.516v-315.061
+                                        		C1604.196,1189.291,1565.833,1150.928,1518.679,1150.928z M1541.184,1551.505c0,12.403-10.096,22.504-22.505,22.504H333.948
+                                        		c-12.409,0-22.504-10.101-22.504-22.504v-315.061c0-12.412,10.096-22.505,22.504-22.505h1184.73
+                                        		c12.409,0,22.505,10.093,22.505,22.505V1551.505z" />
+                                                <path fill="#333333" d="M333.948,913.886h305.565c47.153,0,85.517-38.365,85.517-85.519V522.802
+                                        		c0-47.154-38.363-85.516-85.517-85.516H333.948c-47.154,0-85.517,38.362-85.517,85.516v305.565
+                                        		C248.432,875.521,286.794,913.886,333.948,913.886z M311.444,522.802c0-12.408,10.096-22.504,22.504-22.504h305.565
+                                        		c12.408,0,22.505,10.096,22.505,22.504v305.565c0,12.408-10.097,22.505-22.505,22.505H333.948
+                                        		c-12.409,0-22.504-10.097-22.504-22.505V522.802z" />
+                                                <path fill="#333333" d="M1572.689,996.396H279.938c-17.401,0-31.506,14.108-31.506,31.505c0,17.406,14.105,31.507,31.506,31.507
+                                        		h1292.751c17.401,0,31.507-14.101,31.507-31.507C1604.196,1010.505,1590.091,996.396,1572.689,996.396z" />
+                                                <path fill="#333333" d="M1572.689,832.116H858.558c-17.402,0-31.507,14.105-31.507,31.507c0,17.401,14.105,31.505,31.507,31.505
+                                        		h714.132c17.401,0,31.507-14.104,31.507-31.505C1604.196,846.222,1590.091,832.116,1572.689,832.116z" />
+                                                <path fill="#333333" d="M1572.689,643.081H858.558c-17.402,0-31.507,14.105-31.507,31.506c0,17.401,14.105,31.505,31.507,31.505
+                                        		h714.132c17.401,0,31.507-14.104,31.507-31.505C1604.196,657.186,1590.091,643.081,1572.689,643.081z" />
+                                                <path fill="#333333" d="M1572.689,454.044H858.558c-17.402,0-31.507,14.105-31.507,31.507c0,17.401,14.105,31.505,31.507,31.505
+                                        		h714.132c17.401,0,31.507-14.104,31.507-31.505C1604.196,468.15,1590.091,454.044,1572.689,454.044z" />
+                                                <circle fill="#333333" cx="204.913" cy="171.616" r="50.635" />
+                                                <circle fill="#333333" cx="364.694" cy="171.616" r="50.635" />
+                                                <circle fill="#333333" cx="524.474" cy="171.616" r="50.635" />
+                                            </g>
+                                        </svg>
+                                    </div>
+                                </div>
+                                </div>
                             </div>
                             <div class="col-lg-3 col-md-6 col-sm-6">
                                 <div class="small-box bg-gradient-success">
+                                    <div class="box-text">
                                     <div class="inner">
-                                        <h3 id="publishedPosts">0</h3>
                                         <p>Bài viết đã xuất bản</p>
-                                    </div>
-                                    <div class="icon">
-                                        <i class="fas fa-check-double"></i>
+                                        <h3 id="publishedPosts">0</h3>
+                                       
                                     </div>
                                     <a href="https://dev-true-ads.trueads.ai/website/?page=posts&amp;status=publish"
                                         class="small-box-footer">
                                         Xem chi tiết <i class="fas fa-arrow-circle-right"></i>
                                     </a>
                                 </div>
+                                <div class="box-img">
+                                    <box class="box-img-inner">
+                                        <svg version="1.1" id="_x32_" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="35px"
+                                            height="35px" viewBox="0 0 512 512" xml:space="preserve">
+                                            <g>
+                                                <path class="st0"
+                                                    d="M421.073,221.719c-0.578,11.719-9.469,26.188-23.797,40.094v183.25c-0.016,4.719-1.875,8.719-5.016,11.844
+                                        		c-3.156,3.063-7.25,4.875-12.063,4.906H81.558c-4.781-0.031-8.891-1.844-12.047-4.906c-3.141-3.125-4.984-7.125-5-11.844V152.219
+                                        		c0.016-4.703,1.859-8.719,5-11.844c3.156-3.063,7.266-4.875,12.047-4.906h158.609c12.828-16.844,27.781-34.094,44.719-49.906
+                                        		c0.078-0.094,0.141-0.188,0.219-0.281H81.558c-18.75-0.016-35.984,7.531-48.25,19.594c-12.328,12.063-20.016,28.938-20,47.344
+                                        		v292.844c-0.016,18.406,7.672,35.313,20,47.344C45.573,504.469,62.808,512,81.558,512h298.641c18.781,0,36.016-7.531,48.281-19.594
+                                        		c12.297-12.031,20-28.938,19.984-47.344V203.469c0,0-0.125-0.156-0.328-0.313C440.37,209.813,431.323,216.156,421.073,221.719z" />
+                                                <path class="st0" d="M498.058,0c0,0-15.688,23.438-118.156,58.109C275.417,93.469,211.104,237.313,211.104,237.313
+                                        		c-15.484,29.469-76.688,151.906-76.688,151.906c-16.859,31.625,14.031,50.313,32.156,17.656
+                                        		c34.734-62.688,57.156-119.969,109.969-121.594c77.047-2.375,129.734-69.656,113.156-66.531c-21.813,9.5-69.906,0.719-41.578-3.656
+                                        		c68-5.453,109.906-56.563,96.25-60.031c-24.109,9.281-46.594,0.469-51-2.188C513.386,138.281,498.058,0,498.058,0z" />
+                                            </g>
+                                        </svg>
+                                    </box>
+                                </div>
+                                </div>
                             </div>
                             <div class="col-lg-3 col-md-6 col-sm-6">
                                 <div class="small-box bg-gradient-warning">
+                                    <div class="box-text">
                                     <div class="inner">
-                                        <h3 id="draftContent">0</h3>
                                         <p>Nội dung nháp</p>
-                                    </div>
-                                    <div class="icon">
-                                        <i class="fas fa-pencil-alt"></i>
+                                        <h3 id="draftContent">0</h3>
+                                       
                                     </div>
                                     <a href="https://dev-true-ads.trueads.ai/website/?page=posts&amp;status=draft"
                                         class="small-box-footer">
                                         Xem chi tiết <i class="fas fa-arrow-circle-right"></i>
                                     </a>
                                 </div>
+                                <div class="box-img">
+                                    <div class="box-img-inner">
+                                        <svg width="35px" height="35px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" mirror-in-rtl="true">
+                                            <g fill="#494c4e" fill-rule="evenodd">
+                                                <path
+                                                    d="M11.01 2a4.93 4.93 0 0 1 3.19 1.16l.15.12a4.958 4.958 0 0 1 1.389-.27A5.479 5.479 0 0 1 21 8.5a5.485 5.485 0 0 1-5.326 5.49 5.472 5.472 0 0 1-6.4-.05c-.251.04-.505.06-.759.06a5.523 5.523 0 0 1-3.985-1.71c-2.283-2.4-2.017-6.842.893-8.614a5 5 0 0 1 2.59-.726h.06A4.98 4.98 0 0 1 11.01 2zm-4 5h5.995a1 1 0 0 0 0-2H7.014a1 1 0 1 0 0 2H7.01zm.004 3.975h9.992a1 1 0 0 0 0-2H7.014a1 1 0 1 0 0 2zM11.01 0a6.962 6.962 0 0 0-3.565.973 5.583 5.583 0 0 1-1.145.189 6.94 6.94 0 0 0-1.117.386A7.025 7.025 0 0 0 1.1 6.9a7.864 7.864 0 0 0 3.911 8.223A7.485 7.485 0 0 0 8.512 16h.251a7.5 7.5 0 0 0 3.746 1 7.386 7.386 0 0 0 3.825-1.051A7.441 7.441 0 0 0 23 8.5c0-.139 0-.278-.015-.407a7.524 7.524 0 0 0-7.172-7.082h-.16a6.569 6.569 0 0 0-.871.1A6.974 6.974 0 0 0 11.01 0z" />
+                                                <circle cx="3.981" cy="19" r="1.999" />
+                                                <circle cx="1.999" cy="23" r="1" />
+                                            </g>
+                                        </svg>
+                                        
+                                    </div>
+                                </div>
+                                </div>
                             </div>
                             <div class="col-lg-3 col-md-6 col-sm-6">
                                 <div class="small-box bg-gradient-info">
+                                    <div class="box-text">
                                     <div class="inner">
-                                        <h3 id="pendingComments">0</h3>
                                         <p>Bình luận chờ duyệt</p>
-                                    </div>
-                                    <div class="icon">
-                                        <i class="fas fa-comment-dots"></i>
+                                        <h3 id="pendingComments">0</h3>
+                                        
                                     </div>
                                     <a href="https://dev-true-ads.trueads.ai/website/?page=comments&amp;status=pending"
                                         class="small-box-footer">
                                         Xem chi tiết <i class="fas fa-arrow-circle-right"></i>
                                     </a>
+                                </div>
+                                <div class="box-img">
+                                    <div class="box-img-inner">
+                                        <svg fill="#000000" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+                                            xmlns:xlink="http://www.w3.org/1999/xlink" width="35px" height="35px" viewBox="0 0 512 512"
+                                            enable-background="new 0 0 512 512" xml:space="preserve">
+                                            <g>
+                                                <path d="M256,0C114.609,0,0,114.609,0,256s114.609,256,256,256s256-114.609,256-256S397.391,0,256,0z M256,472
+                                        		c-119.297,0-216-96.703-216-216S136.703,40,256,40s216,96.703,216,216S375.297,472,256,472z" />
+                                                <path
+                                                    d="M310.875,254.734c-40.438,0-73.172,22.078-73.172,49.234c0,12.094,10.172,25.875,20.922,34.469L248.188,368l31.703-19.469
+                                        		c9.453,2.969,19.891,4.656,30.984,4.656c40.391,0,73.125-22,73.125-49.219C384,276.812,351.266,254.734,310.875,254.734z" />
+                                                <path d="M256,144c-70.688,0-128,40.234-128,89.891c0,22.062,17.781,47.234,36.562,62.922l-18.266,53.969l55.547-35.562
+                                        		c7.25,2.375,14.938,4.25,22.844,5.656c-3.234-6.344-5.25-12.938-5.25-19.125c0-35.484,40.938-64.219,91.438-64.219
+                                        		c27.062,0,51.188,8.422,67.938,21.578c3.312-8,5.188-16.469,5.188-25.219C384,184.234,326.688,144,256,144z" />
+                                            </g>
+                                        </svg>
+                                    </div>
+                                </div>
                                 </div>
                             </div>
                         </div>
@@ -2058,9 +2180,9 @@
                             </div>
                         </div>
 
-                        <div class="row">
+                        <div class="row new">
                             <!-- Nội dung mới nhất -->
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-header border-0">
                                         <h3 class="card-title">Nội dung mới nhất</h3>
@@ -2092,7 +2214,7 @@
                             </div>
 
                             <!-- Bình luận gần đây -->
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-header border-0">
                                         <h3 class="card-title">Bình luận gần đây</h3>
@@ -2181,7 +2303,7 @@
                         </div>
 
                         <!-- Hàng thứ năm: Thông tin SEO và hệ thống -->
-                        <div class="row">
+                        <div class="row status">
                             <!-- Thông tin SEO -->
                             <div class="col-md-12">
                                 <div class="card">
@@ -2239,7 +2361,10 @@
                                                     <td>
                                                         <div class="d-flex justify-content-between">
                                                             <span>Bài viết cần cải thiện SEO</span>
-                                                            <span class="badge bg-warning" id="posts-need-seo">0</span>
+                                                            <span class="badge bg-warning" id="posts-need-seo">0%</span>
+                                                        </div>
+                                                        <div class="progress mt-2">
+                                                            <div class="warning-bar bg-info" id="posts-with-keywords-bar" style="width: 0%"></div>
                                                         </div>
                                                         <a href="https://dev-true-ads.trueads.ai/website/?page=seo_improvement"
                                                             class="btn btn-sm btn-outline-primary mt-2">Xem chi tiết</a>
