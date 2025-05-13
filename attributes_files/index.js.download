@@ -1,0 +1,279 @@
+let listattribute = undefined;
+let listdata = [];
+
+document.addEventListener("DOMContentLoaded", function () {
+  listattribute = new DataTable("#listattribute", {
+    paging: true,
+    pageLength: 10,
+    columns: [
+      { data: "check" },
+      { data: "name" },
+      { data: "slug" },
+      { data: "attribute_orderby" },
+      { data: "listname" },
+    ],
+    initComplete: function () {
+      $(".dt-search").hide();
+      $("#attribute-search-input").on("keyup", function () {
+        listattribute.search(this.value).draw();
+      });
+    },
+    dom: 'rt<"bottom pagination-container"lfp><"clear">',
+    language: {
+      lengthMenu: "Hiển thị _MENU_ bản ghi mỗi trang", // Tùy chỉnh văn bản
+      info: "Đang hiển thị từ _START_ đến _END_ của _TOTAL_ bản ghi", // Hiển thị thông tin bản ghi
+      paginate: {
+        first: `<span class="page-link" aria-label="First">&laquo;&laquo;</span>`,
+        previous: `<span class="page-link" aria-label="Previous">&laquo;</span>`,
+        next: ` <span class="page-link" aria-label="Next">&raquo;</span>`,
+        last: `<span class="page-link" aria-label="Last">&raquo;&raquo;</span>`,
+      },
+    },
+    drawCallback: function () {
+      $(".dataTables_paginate .paginate_button").addClass("btnstyle");
+    },
+  });
+  getSelectattributes();
+});
+async function getSelectattributes() {
+  let proparam = getParam("param");
+  listdata = [];
+  let data = {
+    action: "get_all_product_attributes",
+    data: {},
+  };
+  let response = await AjaxData(data, "get");
+  if (response.data) {
+    loadattributes(response.data);
+    if (proparam == "editattribute") {
+      let id = getParam("id");
+      loadedit(id, response.data);
+    }
+  }
+}
+
+function loadattributes(response) {
+  const homeUrl = getBaseUrl();
+  listattribute.clear();
+  let attributes = response;
+  const formattedattributes = attributes.map((attributes) => ({
+    check: `<input class="checkclick" type="checkbox" value="${attributes.id}" />`,
+    name: `<div class="row-actions">
+                                <p${
+                                  attributes.parent
+                                    ? ` title="thuộc: ${attributes.parent.name}" >--`
+                                    : ">"
+                                } ${attributes.name || "No Name"} </p>
+                                <a href="${homeUrl}/?arg=products&param=editattribute&id=${
+      attributes.id
+    }">Chỉnh sửa</a>
+                                <span class="delete-tag" onclick="deleteitem('${
+                                  attributes.id
+                                }','${
+      attributes.slug
+    }')" style="color:red;cursor: pointer;">Xóa</span>       
+                            </div>`,
+    slug: attributes.slug,
+    attribute_orderby: attributes.attribute_orderby,
+    listname:
+      (attributes.terms && attributes.terms.length > 0
+        ? attributes.terms.map((term) => term.name).join(", ")
+        : "-") +
+      `<br> <a href="#"
+                                        class="thuoctinh-chitiet" onclick="saveSlugAndRedirect('${attributes.name}','${attributes.slug}')">Cấu hình</a>`,
+  }));
+  listattribute.rows.add(formattedattributes);
+  listattribute.draw();
+}
+
+function saveSlugAndRedirect(name, slug) {
+  localStorage.setItem("selected_attribute_name", name);
+  localStorage.setItem("selected_attribute_slug", slug);
+  const storedSlug = localStorage.getItem("selected_attribute_slug");
+
+  const currentUrl = window.location.href;
+  const url = new URL(currentUrl);
+  const newUrl = `${url.origin}${url.pathname}/?arg=products&param=configureterms&attribute=${storedSlug}`;
+  window.location.href = newUrl;
+}
+
+function loadedit(id, data) {
+  let check = false;
+  $.each(data, function (key, item) {
+    if (item.id == id) {
+      check = true;
+      edititem(item);
+    }
+  });
+  if (check == false) {
+    Toast.error("không tồn tại danh mục chỉnh sửa");
+  }
+}
+$(".btn-create_attr").on("click", async function () {
+  let attribute_slug = $("#attribute_slug").val();
+  let attribute_name = $("#attribute_name").val();
+  let attribute_orderby = $("#attribute_orderby").val();
+  let attribute_public = $("#attribute_public").is(":checked");
+  let attribute_type = $("#attribute_type").val();
+  if (attribute_slug == "") {
+    attribute_slug = attribute_name;
+  }
+  if (
+    checktestandalert(attribute_name, "tên thuộc tính") &&
+    checktestandalert(attribute_slug, "loại thuộc tính")
+  ) {
+    let data = {
+      action: "create_product_attribute",
+      data: {
+        attribute_slug: attribute_slug,
+        attribute_name: attribute_name,
+        attribute_orderby,
+        attribute_public,
+        attribute_type,
+      },
+    };
+    let response = await AjaxData(data, "post");
+    if (response.success) {
+      $(".from_create_attr").css("display", "none");
+      getSelectattributes();
+      Toast.success("Thêm thành công!");
+    }
+  }
+});
+
+$(".checkdelete").on("click", function () {
+  if ($(this).is(":checked")) {
+    $(".checkclick").prop("checked", true);
+  } else {
+    $(".checkclick").prop("checked", false);
+  }
+});
+
+async function deleteitem(id) {
+  let listattribute = { id };
+  let data = {
+    action: "delete_attribute",
+    data: { listattribute },
+  };
+  let response = await AjaxData(data, "post");
+  if (response.success) {
+    Toast.success("Xóa thành công");
+    getSelectattributes();
+  } else {
+    Toast.error("Có lỗi");
+  }
+}
+
+$(".btnadd").on("click", async function () {
+  let name = $("#attribute_name").val();
+  let slug = $("#slug_name").val();
+  let parent = $(".optionattribute").val();
+  let data = {
+    action: "create_attribute",
+    data: {
+      name,
+      slug,
+      parent,
+    },
+  };
+  let response = await AjaxData(data, "post");
+  if (response.data) {
+    Toast.success("Đã thêm thành công");
+    getSelectattributes();
+  }
+});
+
+$(".btnupdate").on("click", async function () {
+  let attribute_name = $("#attribute_name").val();
+  let attribute_slug = $("#attribute_slug").val();
+  let attribute_type = $("#attribute_type").val();
+  let attribute_orderby = $("#attribute_orderby").val();
+  let attribute_public = $("#attribute_public").is(":checked");
+  let attribute_id = $("#attribute_id").val();
+  let data = {
+    action: "update_product_attribute",
+    data: {
+      attribute_name,
+      attribute_slug,
+      attribute_type,
+      attribute_orderby,
+      attribute_public,
+      attribute_id,
+    },
+  };
+  let response = await AjaxData(data, "post");
+  if (response.success) {
+    Toast.success("Cập nhật thành công");
+    getSelectattributes();
+  }
+});
+function edititem(item) {
+  $("#attribute_public").prop("checked", item.attribute_public);
+  $("#attribute_name").val(item.name);
+  $("#attribute_id").val(item.id);
+  $("#taxonomy").val(item.slug);
+  $("#slug_name").val(item.slug);
+  $("#attribute_type").val(item.attribute_type);
+  $("#attribute_orderby").val(item.attribute_orderby);
+  statusform("update");
+}
+$(".btnviewadd").on("click", function () {
+  statusform("add");
+});
+
+function statusform(status) {
+  if (status == "add") {
+    $(".btnviewadd").css("display", "none");
+    $(".btnupdate").css("display", "none");
+    $(".btnadd").css("display", "block");
+    $("#attribute_name").val("");
+    $("#attribute_id").val("");
+    $("#slug_name").val("");
+    $(".optionattribute").html("");
+    let html = `<option value="" checked>Trống</option>`;
+    $.each(listdata, function (key, item) {
+      html += `<option value="${item.slug}">${item.name}</option>`;
+    });
+    $(".optionattribute").append(html);
+    $(".optionattribute").val(parent);
+  } else {
+    $(".btnviewadd").css("display", "block");
+    $(".btnupdate").css("display", "block");
+    $(".btnadd").css("display", "none");
+  }
+}
+
+$(".checkstatus").on("click", async function () {
+  let value = $(".statusitem").val();
+  let listattribute = get_data_checked($(".checkclick"));
+  if (value == "delete") {
+    let data = {
+      action: "delete_attribute",
+      data: { listattribute },
+    };
+    let response = await AjaxData(data, "post");
+    if (response.success) {
+      Toast.success("Xóa thành công");
+      getSelectattributes();
+    } else {
+      Toast.error("Có lỗi");
+    }
+  }
+});
+$(".checkstatus1").on("click", async function () {
+  let value = $(".statusitem1").val();
+  let listattribute = get_data_checked($(".checkclick"));
+  if (value == "delete") {
+    let data = {
+      action: "delete_attribute",
+      data: { listattribute },
+    };
+    let response = await AjaxData(data, "post");
+    if (response.success) {
+      Toast.success("Xóa thành công");
+      getSelectattributes();
+    } else {
+      Toast.error("Có lỗi");
+    }
+  }
+});

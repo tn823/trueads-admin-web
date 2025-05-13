@@ -1,0 +1,89 @@
+document.addEventListener("DOMContentLoaded", function () {
+  getSelectattributes();
+  $(".btnupdate").on("click", async function () {
+    let attribute_name = $("#attribute_name").val();
+    let attribute_slug = $("#attribute_slug").val();
+    let attribute_type = $("#attribute_type").val();
+    let attribute_orderby = $("#attribute_orderby").val();
+    let attribute_public = $("#attribute_public").is(":checked");
+    let attribute_id = $("#attribute_id").val();
+    let data = {
+      action: "update_product_attribute",
+      data: {
+        attribute_name,
+        attribute_slug,
+        attribute_type,
+        attribute_orderby,
+        attribute_public,
+        attribute_id,
+      },
+    };
+    console.log(data);
+    let response = await AjaxData(data, "post");
+    console.log(response);
+    if (response.success) {
+      Toast.success("Cập nhật thành công");
+      getSelectattributes();
+    }
+  });
+});
+
+async function getSelectattributes() {
+  let proparam = getParam("param");
+  listdata = [];
+  let data = {
+    action: "get_all_product_attributes",
+    data: {},
+  };
+  let response = await AjaxData(data, "get");
+  if (response.data) {
+    loadattributes(response.data);
+  }
+}
+
+function loadattributes(response) {
+  $.each(response, function (key, item) {
+    console.log(item);
+    let html = ` <div class="payment-method">
+            <div class="method-name">
+                <span>${item.name}</span>
+            </div>
+            <div>
+                <label class="toggle-switch">
+                    <input type="checkbox" class="itemclick" data-attribute_name="${
+                      item.name
+                    }" data-attribute_slug="${
+      item.slug
+    }" data-attribute_type="${item.attribute_type}" data-attribute_orderby ="${
+      item.attribute_orderby
+    }" data-attribute_public ="${item.attribute_public}" data-attribute_id ="${
+      item.id
+    }" ${item.attribute_public ? "checked" : ""}>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>`;
+    $(".payment-methods").append(html);
+  });
+  $(".itemclick").on("click", async function () {
+    let attribute_id = $(this).attr("data-attribute_id");
+    let attribute_name = $(this).attr("data-attribute_name");
+    let attribute_slug = $(this).attr("data-attribute_slug");
+    let attribute_type = $(this).attr("data-attribute_type");
+    let attribute_orderby = $(this).attr("data-attribute_orderby");
+
+    let attribute_public = $(this).is(":checked");
+    let data = {
+      action: "update_product_attribute",
+      data: {
+        attribute_id,
+        attribute_name,
+        attribute_slug,
+        attribute_type,
+        attribute_orderby,
+        attribute_public,
+      },
+    };
+    let response = await AjaxData(data, "post");
+  });
+}

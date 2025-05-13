@@ -1,0 +1,398 @@
+/* bank-transfer */
+.logo .breadcrumb {
+    margin-bottom: 0; 
+    align-content: center;
+    margin: 0 0 0 30px;
+  }
+/* .banktranfer{
+    display: flex;
+} */
+h2.text-headxl{
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 28px;
+    margin-bottom: 16px;
+  }
+.form-group {
+    margin-bottom: 1.5rem;
+    display: flex;
+    gap: 200px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #2d2d2d;
+    width: 100px;
+    position: relative;
+    flex-grow: 1;
+}
+.gap{
+    gap: 85px;
+}
+.form-group .help-icon {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background: #e0e0e0;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 16px;
+    font-size: 12px;
+    color: #666;
+    margin-left: 0.5rem;
+    cursor: help;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+textarea.form-control {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.checkbox-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.checkbox-wrapper label{
+    width: unset;
+}
+.checkbox-wrapper input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+}
+
+.table-wrapper {
+    flex-grow: 1;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+}
+
+th, td {
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+}
+
+.btn {
+    padding: 0.75rem 1rem;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.btn-primary {
+    background-color: #ff4742;
+    color: white;
+    text-decoration: none;
+    color: #fff;
+    padding: 8px;
+    border-radius: 8px;
+    font-size: 14px;
+    box-shadow: 0 -2px #00000029 inset, 0 1px #0000001f;
+    font-weight: 600;
+    margin-bottom: 1px;
+}
+
+.btn-secondary {
+    background-color: #e0e0e0;
+    color: #333;
+    margin-left: 0.5rem;
+    text-decoration: none;
+    color: #fff;
+    padding: 8px;
+    border-radius: 8px;
+    font-size: 14px;
+    box-shadow: 0 -2px #00000029 inset, 0 1px #0000001f;
+    font-weight: 600;
+}
+
+.btn-save {
+    background-color: #0088cc;
+    color: white;
+    margin-top: 1rem;
+    text-decoration: none;
+    color: #fff;
+    padding: 8px;
+    border-radius: 8px;
+    font-size: 14px;
+    box-shadow: 0 -2px #00000029 inset, 0 1px #0000001f;
+    font-weight: 600;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+.account-actions {
+    margin-top: 1rem;
+}
+.help-icon{
+    margin: -8px -24px 0 0;
+    position: absolute;
+    right: -175px;
+    top: 50%;
+}
+@media (max-width: 768px) {
+    body {
+        padding: 1rem;
+    }
+
+    .container {
+        padding: 1rem;
+    }
+}
+/* payment-method */
+
+.logo .breadcrumb {
+    margin-bottom: 0; 
+    align-content: center;
+    margin: 0 0 0 30px;
+    background: #fff;
+  }
+  /* .payment-container{
+    display: flex;
+  } */
+  .headline-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: #2d2d2d;
+  }
+  
+  .description {
+    color: #666;
+    margin-bottom: 2rem;
+  }
+  
+  .payment-methods {
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+  }
+  
+  .payment-header,
+  .payment-method {
+    display: grid;
+    grid-template-columns: 1fr 80px 500px 80px;
+    padding: 1rem;
+    border-bottom: 1px solid #e0e0e0;
+    align-items: center;
+  }
+  
+  .payment-header {
+    background: #f8f9fa;
+    font-weight: 600;
+  }
+  
+  .payment-method {
+    grid-template-columns: 1fr 80px 500px 80px;
+    background-color: #ffffff;
+    align-items: start;
+  }
+  
+  .method-name {
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+  .method-name span {
+    padding-left: 30px;
+  }
+  .th-method {
+    margin-left: 7em;
+  }
+  .toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+  }
+  
+  .toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 24px;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+  }
+  
+  input:checked + .slider {
+    background-color: #2196f3;
+  }
+  
+  input:checked + .slider:before {
+    transform: translateX(20px);
+  }
+  
+  .description-text {
+    color: #666;
+    font-size: 0.9rem;
+  }
+  
+  .save-button {
+    background-color: #ff5f14;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    margin-top: 1.5rem;
+    transition: background-color 0.2s;
+    font-size: 13px;
+    font-weight: 400;
+    height: 36px;
+    padding: 6px 12px;
+    text-decoration: none;
+    background: #ff5f14;
+    color: #fff;
+    padding: 8px;
+    border-radius: 8px;
+    font-size: 14px;
+    box-shadow: 0 -2px #00000029 inset, 0 1px #0000001f;
+    font-weight: 600;
+  }
+  
+  .save-button:hover {
+    background-color: #006da3;
+  }
+  
+  .set-default {
+    background-color: #ff4742;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.875rem;
+  }
+  
+  .set-default:hover {
+    background-color: #e5413d;
+  }
+  
+  .expand-icon {
+    color: #666;
+    cursor: pointer;
+    font-size: 1.2rem;
+    margin-right: 0.5rem;
+  }
+  
+  .btn {
+    background-color: #ff4742;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-align: center;
+    text-decoration: none;
+    background: #ff5f14;
+    color: #fff;
+    border-radius: 8px;
+    font-size: 14px;
+    box-shadow: 0 -2px #00000029 inset, 0 1px #0000001f;
+    font-weight: 600;
+  }
+  
+  .btn:hover {
+    text-decoration: none;
+    background: #ff5f14;
+    color: #fff;
+    padding: 8px;
+    border-radius: 8px;
+    font-size: 14px;
+    box-shadow: 0 -2px #00000029 inset, 0 1px #0000001f;
+    font-weight: 600;
+  }
+  @media (max-width: 768px) {
+    .payment-header,
+    .payment-method {
+      grid-template-columns: 1fr 80px auto;
+      gap: 1rem;
+      padding: 1rem 0.5rem;
+    }
+  
+    .description-text {
+      font-size: 0.8rem;
+    }
+  
+    body {
+      padding: 1rem;
+    }
+  }
+/* .banktranfer .btn:hover { */
+.bank_tranfer .btn:hover {
+    padding: 8px 16px;
+}
+/* .banktranfer .checkbox-wrapper label { */
+.bank_tranfer .checkbox-wrapper label {
+    margin-bottom: 0;
+}
+/* .banktranfer .form-control { */
+.bank_tranfer .form-control {
+    border: 1px solid #e8e9ed;
+}
+/* .banktranfer input[type="checkbox" i] { */
+.bank_tranfer input[type="checkbox" i] {
+    background-color: #ff5f14;
+}
+/* .payment-container > .container { */
+.wrapped > .payment_container {
+    margin: 0;
+}
+/* .payment-container .btn:hover { */
+.payment_container .btn:hover {
+    padding: 8px 16px;
+}
+/* .payment-container input:checked + .slider { */
+.payment_container input:checked + .slider {
+    background: #ff5f14;
+}

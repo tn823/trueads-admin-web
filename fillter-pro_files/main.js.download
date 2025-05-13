@@ -1,0 +1,188 @@
+const notificationSidebar = document.getElementById("notification-sidebar");
+const notificationIcon = document.getElementById("notification-icon");
+const closeButton = document.getElementById("close-sidebar");
+const overlay = document.getElementById("overlay");
+let posUrl = location.origin + "/pos/";
+
+function closeSidebar() {
+  notificationSidebar.classList.remove("open");
+  overlay.style.display = "none";
+}
+
+document.querySelectorAll(".notification-content").forEach((content, index) => {
+  const showMoreButton = content.nextElementSibling;
+  showMoreButton.addEventListener("click", () => {
+    if (content.style.maxHeight === "none") {
+      content.style.maxHeight = "150px";
+      showMoreButton.textContent = "Xem thêm";
+    } else {
+      content.style.maxHeight = "none";
+      showMoreButton.textContent = "Thu gọn";
+    }
+  });
+});
+
+function clearAllDataSubsites() {
+  const cookies = document.cookie.split(";");
+  localStorage.clear();
+  sessionStorage.clear();
+  for (let i = 0; i < cookies.length; i++) {
+    const cookie = cookies[i];
+    const eqPos = cookie.indexOf("=");
+    const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+    document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;";
+  }
+}
+async function logoutSubSite() {
+  clearAllDataSubsites();
+  AjaxData({ action: "logout_user" }, "post");
+  location.href = getBaseUrl() + "/sso";
+}
+function getBaseUrl() {
+  let hostname = window.location.hostname;
+  let protocol = window.location.protocol;
+  let pathname = window.location.pathname;
+
+  if (hostname === "localhost" || hostname === "127.0.0.1") {
+    let subDirectory = pathname.split("/")[2];
+    return `${protocol}//${hostname}/trueadsai/${subDirectory}`;
+  } else {
+    protocol = "";
+  }
+  return window.location.origin + "/" + pathname.split("/")[1];
+}
+
+function getToken() {
+  return {
+    accessToken: localStorage.getItem("jwt_access_token"),
+    refreshToken: localStorage.getItem("jwt_refresh_token"),
+  };
+}
+
+function updateToken(response) {
+  try {
+    if (response.tokens) {
+      const { accessToken, refreshToken } = response.tokens;
+      localStorage.setItem("jwt_access_token", accessToken);
+      localStorage.setItem("jwt_refresh_token", refreshToken);
+    }
+  } catch (e) {}
+}
+
+async function AjaxData(data, type) {
+
+  let urlhost = getBaseUrl();
+  // let hostnameurl = urlhost + `/wp-admin/admin-ajax.php`;
+
+  let hostnameurl =  `/wp-admin/admin-ajax.php`;
+
+
+  let tokens = getToken();
+  return new Promise((resolve, reject) => {
+    $.ajax({
+      url: hostnameurl,
+      dataType: "json",
+      headers: {
+        Authorization: `Bearer ${tokens.accessToken}`,
+        tokenRefresh: `Bearer ${tokens.refreshToken}`,
+      },
+      type: type,
+      cache: false,
+      data: data,
+      success: function (response) {
+        updateToken(response);
+        resolve(response);
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        if (jqXHR.status === 403) {
+          return logoutSubSite();
+        }
+        reject({
+          status: jqXHR.status,
+          statusText: textStatus,
+          responseText: jqXHR.responseText,
+          error: errorThrown,
+        });
+      },
+    });
+  });
+}
+
+function getParam(param) {
+  let urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get(param);
+}
+
+function checktestandalert(a, b) {
+  if (a == "") {
+    Toast.warning("Vui lòng nhập:" + b);
+    return false;
+  }
+  return true;
+}
+
+function get_data_checked(data) {
+  let arr = [];
+  $.each(data, (key, item) => {
+    if ($(item).is(":checked")) {
+      arr.push($(item).val());
+    }
+  });
+  return arr;
+}
+
+const Toast = {
+  success: (text) =>
+    Toastify({
+      text,
+      duration: 3000,
+      close: true,
+      gravity: "top", // `top` or `bottom`
+      position: "right", // `left`, `center` or `right`
+      stopOnFocus: true, // Prevents dismissing of toast on hover
+      style: {
+        background: "linear-gradient(135deg, #2ecc71, #27ae60)",
+      },
+    }).showToast(),
+  info: (text) =>
+    Toastify({
+      text,
+      duration: 3000,
+      close: true,
+      gravity: "top",
+      position: "right",
+      stopOnFocus: true,
+      style: {
+        background: "linear-gradient(135deg, #3498db, #2980b9)",
+      },
+    }).showToast(),
+  error: (text) =>
+    Toastify({
+      text,
+      duration: 3000,
+      close: true,
+      gravity: "top", // `top` or `bottom`
+      position: "right", // `left`, `center` or `right`
+      stopOnFocus: true, // Prevents dismissing of toast on hover
+      style: {
+        background: " linear-gradient(135deg, #e74c3c, #c0392b)",
+      },
+    }).showToast(),
+  warning: (text) =>
+    Toastify({
+      text,
+      duration: 3000,
+      close: true,
+      gravity: "top", // `top` or `bottom`
+      position: "right", // `left`, `center` or `right`
+      stopOnFocus: true, // Prevents dismissing of toast on hover
+      style: {
+        background: " linear-gradient(135deg, #f39c12, #e67e22)",
+      },
+    }).showToast(),
+};
+
+const LoadingPage = {
+  open: () => $(".wrapper-loading-page").show(),
+  close: () => $(".wrapper-loading-page").hide(),
+};
