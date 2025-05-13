@@ -1,0 +1,286 @@
+let listbrand = undefined;
+let listdata = [];
+
+document.addEventListener("DOMContentLoaded", function () {
+  listbrand = new DataTable("#listbrand", {
+    paging: true, // Bật phân trang
+    pageLength: 10,
+    columns: [
+      { data: "check" },
+      { data: "name" },
+      { data: "description" },
+      { data: "slug" },
+      { data: "count" },
+    ],
+    initComplete: function () {
+      $(".dt-search").hide();
+      $("#brand-search-input").on("keyup", function () {
+        listbrand.search(this.value).draw();
+      });
+    },
+    dom: 'rt<"bottom pagination-container"lfp><"clear">',
+    language: {
+      lengthMenu: "Hiển thị _MENU_ bản ghi mỗi trang", // Tùy chỉnh văn bản
+      info: "Đang hiển thị từ _START_ đến _END_ của _TOTAL_ bản ghi", // Hiển thị thông tin bản ghi
+      paginate: {
+        first: `<span class="page-link" aria-label="First">&laquo;&laquo;</span>`,
+        previous: `<span class="page-link" aria-label="Previous">&laquo;</span>`,
+        next: ` <span class="page-link" aria-label="Next">&raquo;</span>`,
+        last: `<span class="page-link" aria-label="Last">&raquo;&raquo;</span>`,
+      },
+    },
+    drawCallback: function () {
+      $(".dataTables_paginate .paginate_button").addClass("btnstyle");
+    },
+  });
+  getSelectBrands();
+});
+async function getSelectBrands() {
+  let proparam = getParam("param");
+  listdata = [];
+  let data = {
+    action: "get_brands",
+    data: {},
+  };
+  let response = await AjaxData(data, "get");
+  if (response.data) {
+    loadbrands(response.data);
+    loadhtml(response.data);
+
+    console.log(proparam);
+    if (proparam == "editbrand") {
+      let id = getParam("id");
+      loadedit(id, response.data);
+    }
+  }
+}
+
+function loadhtml(response) {
+  listdata = response;
+  $(".optionbrand").append(`<option value="0">Trống</option>`);
+  $.each(response, function (key, item) {
+    $(".optionbrand").append(
+      `<option value="${item.id}">${item.name}</option>`
+    );
+  });
+}
+
+function loadbrands(response) {
+  const homeUrl = getBaseUrl();
+  listbrand.clear();
+  let brands = response;
+  const formattedbrands = brands.map((brands) => ({
+    check: `<input class="checkclick" type="checkbox" value="${brands.id}" />`,
+    name: `<div class="row-actions">
+                                <p${
+                                  brands.parent
+                                    ? ` title="thuộc: ${brands.parent.name}" >--`
+                                    : ">"
+                                } ${brands.name || "No Name"} </p>
+                                <a href="${homeUrl}/?arg=products&param=editbrand&id=${
+      brands.id
+    }">Chỉnh sửa</a>
+                                <span class="delete-tag" onclick="deleteitem('${
+                                  brands.id
+                                }')" style="color:red;cursor: pointer;">Xóa</span>       
+                            </div>`,
+    description: brands.description,
+    slug: brands.slug,
+    count: brands.count || "N/A",
+  }));
+  listbrand.rows.add(formattedbrands);
+  listbrand.draw();
+}
+{
+  /* <span class="edit" onclick="edititem('${brands.id}','${brands.name}','${brands.description_long}','${brands.slug}','${brands.parent?brands.parent.id:0}')" style="color:blue;cursor: pointer;">Chỉnh sửa|</span> */
+}
+function loadedit(id, data) {
+  let check = false;
+  $.each(data, function (key, item) {
+    if (item.id == id) {
+      check = true;
+      edititem(
+        item.id,
+        item.name,
+        item.description_long,
+        item.slug,
+        item.parent ? item.parent.id : null
+      );
+    }
+  });
+  if (check == false) {
+    Toast.error("không tồn tại danh mục chỉnh sửa");
+  }
+}
+
+$(".checkdelete").on("click", function () {
+  if ($(this).is(":checked")) {
+    $(".checkclick").prop("checked", true);
+  } else {
+    $(".checkclick").prop("checked", false);
+  }
+});
+$("#description").summernote({
+  placeholder: "",
+  tabsize: 2,
+  height: 120,
+  toolbar: [
+    ["style", ["style"]],
+    ["font", ["bold", "underline", "clear"]],
+    ["color", ["color"]],
+    ["para", ["ul", "ol", "paragraph"]],
+    ["table", ["table"]],
+    ["insert", ["link", "picture", "video"]],
+    ["view", ["fullscreen", "codeview", "help"]],
+  ],
+});
+async function deleteitem(id) {
+  let listbrand = { id };
+  let data = {
+    action: "delete_brand",
+    data: { listbrand },
+  };
+  let response = await AjaxData(data, "post");
+  if (response.success) {
+    Toast.success("Xóa thành công");
+    getSelectBrands();
+  } else {
+    Toast.error("Có lỗi");
+  }
+}
+
+$(".btnadd").on("click", async function () {
+  let name = $("#brand_name").val();
+  let slug = $("#slug_name").val();
+  let description = $("#description").summernote("code");
+  let parent = $(".optionbrand").val();
+  let data = {
+    action: "create_brand",
+    data: {
+      name,
+      slug,
+      description,
+      parent,
+    },
+  };
+  let response = await AjaxData(data, "post");
+  if (response.data) {
+    Toast.success("Đã thêm thành công");
+    statusform("add");
+    getSelectBrands();
+  }
+});
+
+$(".btnupdate").on("click", async function () {
+  let id = $("#brand_id").val();
+  let name = $("#brand_name").val();
+  let slug = $("#slug_name").val();
+  let description = $("#description").summernote("code");
+  let parent = $(".optionbrand").val();
+  let data = {
+    action: "update_brand",
+    data: {
+      id,
+      name,
+      slug,
+      description,
+      parent,
+    },
+  };
+  let response = await AjaxData(data, "post");
+  if (response.success) {
+    Toast.success("Cập nhật thành công");
+    statusform("add");
+    getSelectBrands();
+  }
+});
+function edititem(id, name, description, slug, parent) {
+  console.log(parent);
+  $("#brand_name").val(name);
+  $("#brand_id").val(id);
+  $("#slug_name").val(slug);
+  $(".optionbrand").html("");
+  $("#description").summernote("code", description);
+  let html = `<option value="">Trống</option>`;
+  if (parent != 0) {
+    $.each(listdata, function (key, item) {
+      if (item.slug != slug) {
+        html += `<option value="${item.id}">${item.name}</option>`;
+      }
+    });
+    $(".optionbrand").append(html);
+    $(".optionbrand").val(parent);
+  } else {
+    $.each(listdata, function (key, item) {
+      if (item.slug != slug) {
+        if (item.parent != null && item.parent.id != id) {
+          html += `<option value="${item.id}">${item.name}</option>`;
+        }
+      }
+    });
+    $(".optionbrand").append(html);
+  }
+  statusform("update");
+}
+$(".btnviewadd").on("click", function () {
+  statusform("add");
+});
+
+function statusform(status) {
+  if (status == "add") {
+    $(".btnviewadd").css("display", "none");
+    $(".btnupdate").css("display", "none");
+    $(".btnadd").css("display", "block");
+    $("#brand_name").val("");
+    $("#brand_id").val("");
+    $("#slug_name").val("");
+    $(".optionbrand").html("");
+    $("#description").summernote("code", "");
+
+    let html = `<option value="" checked>Trống</option>`;
+    $.each(listdata, function (key, item) {
+      html += `<option value="${item.slug}">${item.name}</option>`;
+    });
+    $(".optionbrand").append(html);
+    $(".optionbrand").val(parent);
+  } else {
+    $(".btnviewadd").css("display", "block");
+    $(".btnupdate").css("display", "block");
+    $(".btnadd").css("display", "none");
+  }
+}
+
+$(".checkstatus").on("click", async function () {
+  let value = $(".statusitem").val();
+  let listbrand = get_data_checked($(".checkclick"));
+  if (value == "delete") {
+    let data = {
+      action: "delete_brand",
+      data: { listbrand },
+    };
+    let response = await AjaxData(data, "post");
+    if (response.success) {
+      Toast.success("Xóa thành công");
+      getSelectBrands();
+    } else {
+      Toast.success("Có lỗi");
+    }
+  }
+});
+$(".checkstatus1").on("click", async function () {
+  let value = $(".statusitem1").val();
+  let listbrand = get_data_checked($(".checkclick"));
+  if (value == "delete") {
+    let data = {
+      action: "delete_brand",
+      data: { listbrand },
+    };
+    let response = await AjaxData(data, "post");
+    if (response.success) {
+      Toast.success("Xóa thành công");
+      getSelectBrands();
+    } else {
+      Toast.success("Có lỗi");
+    }
+  }
+});

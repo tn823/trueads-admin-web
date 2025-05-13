@@ -1,0 +1,284 @@
+let listcategory = undefined;
+let listdata = [];
+
+document.addEventListener("DOMContentLoaded", function () {
+  listcategory = new DataTable("#listcategory", {
+    paging: true, // Bật phân trang
+    pageLength: 10,
+    columns: [
+      { data: "check" },
+      { data: "name" },
+      { data: "description" },
+      { data: "slug" },
+      { data: "count" },
+    ],
+    initComplete: function () {
+      $(".dt-search").hide();
+      $("#category-search-input").on("keyup", function () {
+        listcategory.search(this.value).draw();
+      });
+    },
+    dom: 'rt<"bottom pagination-container"lfp><"clear">',
+    language: {
+      lengthMenu: "Hiển thị _MENU_ bản ghi mỗi trang", // Tùy chỉnh văn bản
+      info: "Đang hiển thị từ _START_ đến _END_ của _TOTAL_ bản ghi", // Hiển thị thông tin bản ghi
+      paginate: {
+        first: `<span class="page-link" aria-label="First">&laquo;&laquo;</span>`,
+        previous: `<span class="page-link" aria-label="Previous">&laquo;</span>`,
+        next: ` <span class="page-link" aria-label="Next">&raquo;</span>`,
+        last: `<span class="page-link" aria-label="Last">&raquo;&raquo;</span>`,
+      },
+    },
+    drawCallback: function () {
+      $(".dataTables_paginate .paginate_button").addClass("btnstyle");
+    },
+  });
+
+  $(".checkdelete").on("click", function () {
+    if ($(this).is(":checked")) {
+      $(".checkclick").prop("checked", true);
+    } else {
+      $(".checkclick").prop("checked", false);
+    }
+  });
+  $("#description").summernote({
+    placeholder: "",
+    tabsize: 2,
+    height: 120,
+    toolbar: [
+      ["style", ["style"]],
+      ["font", ["bold", "underline", "clear"]],
+      ["color", ["color"]],
+      ["para", ["ul", "ol", "paragraph"]],
+      ["table", ["table"]],
+      ["insert", ["link", "picture", "video"]],
+      ["view", ["fullscreen", "codeview", "help"]],
+    ],
+  });
+  $(".btnadd").on("click", async function () {
+    let name = $("#category_name").val();
+    let slug = $("#slug_name").val();
+    let description = $("#description").summernote("code");
+    let parent = $(".optioncategory").val();
+    let data = {
+      action: "create_category",
+      data: {
+        name,
+        slug,
+        description,
+        parent,
+      },
+    };
+    let response = await AjaxData(data, "post");
+    if (response.data) {
+      Toast.success("Đã thêm thành công");
+      statusform("add");
+      getSelectCategories();
+    }
+  });
+
+  $(".btnupdate").on("click", async function () {
+    let id = $("#category_id").val();
+    let name = $("#category_name").val();
+    let slug = $("#slug_name").val();
+    let description = $("#description").summernote("code");
+    let parent = $(".optioncategory").val();
+    let data = {
+      action: "update_category",
+      data: {
+        id,
+        name,
+        slug,
+        description,
+        parent,
+      },
+    };
+    let response = await AjaxData(data, "post");
+    if (response.success) {
+      Toast.success("Cập nhật thành công");
+      statusform("add");
+      getSelectCategories();
+    }
+  });
+
+  $(".checkstatus").on("click", async function () {
+    let value = $(".statusitem").val();
+    let listcate = get_data_checked($(".checkclick"));
+    if (value == "delete") {
+      let data = {
+        action: "delete_category",
+        data: { listcate },
+      };
+      let response = await AjaxData(data, "post");
+      if (response.success) {
+        Toast.success("Xóa thành công");
+        getSelectCategories();
+      } else {
+        Toast.error("Có lỗi");
+      }
+    }
+  });
+  $(".checkstatus1").on("click", async function () {
+    let value = $(".statusitem1").val();
+    let listcate = get_data_checked($(".checkclick"));
+    if (value == "delete") {
+      let data = {
+        action: "delete_category",
+        data: { listcate },
+      };
+      let response = await AjaxData(data, "post");
+      if (response.success) {
+        Toast.success("Xóa thành công");
+        getSelectCategories();
+      } else {
+        Toast.error("Có lỗi");
+      }
+    }
+  });
+  getSelectCategories();
+});
+async function getSelectCategories() {
+  let catparam = getParam("param");
+  listdata = [];
+  let data = {
+    action: "get_all_categories",
+    data: {},
+  };
+  let response = await AjaxData(data, "get");
+  if (response.data) {
+    loadcategorys(response.data);
+    loadhtmcate(response.data);
+    if (catparam == "editcategory") {
+      let id = getParam("id");
+      loadedit(id, response.data);
+    }
+  }
+}
+
+function loadhtmcate(response) {
+  listdata = response;
+  $(".optioncategory").append(`<option value="0">Trống</option>`);
+  $.each(response, function (key, item) {
+    $(".optioncategory").append(
+      `<option value="${item.id}">${item.name}</option>`
+    );
+  });
+}
+
+function loadcategorys(response) {
+  const homeUrl = getBaseUrl();
+  listcategory.clear();
+  let categorys = response;
+  const formattedcategorys = categorys.map((categorys) => ({
+    check: `<input class="checkclick" type="checkbox" value="${categorys.id}" />`,
+    name: `<div class="row-actions">
+                                <p${
+                                  categorys.parent
+                                    ? ` title="thuộc: ${categorys.parent.name}" >--`
+                                    : ">"
+                                } ${categorys.name || "No Name"} </p>
+                                <a href="${homeUrl}/?arg=products&param=editcategory&id=${
+      categorys.id
+    }">Chỉnh sửa</a>
+                                <span class="delete-tag" onclick="deleteitem('${
+                                  categorys.id
+                                }')" style="color:red;cursor: pointer;">Xóa</span>       
+                            </div>`,
+    description: categorys.description,
+    slug: categorys.slug,
+    count: categorys.count || "N/A",
+  }));
+  listcategory.rows.add(formattedcategorys);
+  listcategory.draw();
+}
+
+function loadedit(id, data) {
+  let check = false;
+  $.each(data, function (key, item) {
+    if (item.id == id) {
+      check = true;
+      console.log(item);
+
+      return edititem(
+        item.id,
+        item.name,
+        item.description_long,
+        item.slug,
+        item.parent ? item.parent.id : null
+      );
+    }
+  });
+  if (check == false) {
+    Toast.error("không tồn tại danh mục chỉnh sửa");
+  }
+}
+
+async function deleteitem(id) {
+  let listcate = { id };
+  let data = {
+    action: "delete_category",
+    data: { listcate },
+  };
+  let response = await AjaxData(data, "post");
+  if (response.success) {
+    Toast.success("Xóa thành công");
+    getSelectCategories();
+  } else {
+    Toast.error("Có lỗi");
+  }
+}
+
+function edititem(id, name, description, slug, parent) {
+  $("#category_name").val(name);
+  $("#category_id").val(id);
+  $("#slug_name").val(slug);
+  $(".optioncategory").html("");
+  $("#description").summernote("code", description);
+  let html = `<option value="">Trống</option>`;
+  if (parent != 0) {
+    $.each(listdata, function (key, item) {
+      if (item.slug != slug) {
+        html += `<option value="${item.id}">${item.name}</option>`;
+      }
+    });
+    $(".optioncategory").append(html);
+    $(".optioncategory").val(parent);
+  } else {
+    $.each(listdata, function (key, item) {
+      if (item.slug != slug) {
+        if (item.parent != null && item.parent.id != id) {
+          html += `<option value="${item.id}">${item.name}</option>`;
+        }
+      }
+    });
+    $(".optioncategory").append(html);
+  }
+  statusform("update");
+}
+$(".btnviewadd").on("click", function () {
+  statusform("add");
+});
+
+function statusform(status) {
+  if (status == "add") {
+    $(".btnviewadd").css("display", "none");
+    $(".btnupdate").css("display", "none");
+    $(".btnadd").css("display", "block");
+    $("#category_name").val("");
+    $("#category_id").val("");
+    $("#slug_name").val("");
+    $(".optioncategory").html("");
+    $("#description").summernote("code", "");
+
+    let html = `<option value="" checked>Trống</option>`;
+    $.each(listdata, function (key, item) {
+      html += `<option value="${item.slug}">${item.name}</option>`;
+    });
+    $(".optioncategory").append(html);
+    $(".optioncategory").val(parent);
+  } else {
+    $(".btnviewadd").css("display", "block");
+    $(".btnupdate").css("display", "block");
+    $(".btnadd").css("display", "none");
+  }
+}

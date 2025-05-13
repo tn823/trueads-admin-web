@@ -1,0 +1,1224 @@
+@media screen and (max-width: 949px) and (min-width: 769px) and (orientation: landscape) {
+  .content > div:first-child {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+  .wrapped > div:nth-child(2) {
+    margin: 0 auto !important;
+    width: 100%;
+    max-width: 949px;
+    padding: 1.3rem !important;
+  }
+  .ser_menu .breadcrumb {
+    display: none;
+  }
+  .sidebar_main {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 10000;
+    display: none;
+    background: #fff;
+    transition: right linear 0.5s;
+    opacity: 0;
+  }
+  .sidebar_main.transform {
+    right: 0;
+    opacity: 1;
+    display: block;
+    z-index: 900000;
+  }
+  #bar-icon,
+  #notification-icon {
+    display: block;
+    font-size: 30px;
+    margin-left: 20px;
+  }
+  .header-right .user-info {
+    display: none;
+  }
+  .far.fa-comment-alt {
+    display: none;
+  }
+  /* .header-right {
+    flex-direction: row-reverse;
+    justify-content: flex-start;
+  } */
+  /* dashboard */
+  .content-danhthu {
+    justify-items: center;
+  }
+  .tao-sp,
+  .btn-huongdan a {
+    float: unset;
+    width: 100%;
+    margin: 10px 0;
+  }
+  .btn-huongdan .tao-sp {
+    margin-top: 0;
+  }
+  /* thuoctinh */
+  .danhmuc-tintuc .row.row-dautrangdanhmuc,
+  .danhmuc-tintuc .row.row-danhmuc {
+    padding-top: 0;
+  }
+  /* tatcasanpham */
+  .content-tatcasanpham .table-product {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    display: block;
+  }
+  .content-tatcabaiviet table tr,
+  .danhmuc-thuoctinh table tr,
+  .content-tatcasanpham thead tr th {
+    white-space: nowrap;
+  }
+  .content-tatcasanpham .product-price {
+    width: 110px;
+    display: block;
+  }
+  .product-category {
+    white-space: nowrap;
+  }
+  .content-tatcasanpham .product-name {
+    height: 150px;
+  }
+  .row-actions {
+    display: block !important;
+    opacity: 1 !important;
+    height: auto !important;
+  }
+  .edit-tag-actions {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  .order-detail .col-md-9 {
+    width: 65%;
+  }
+  .order-detail .col-md-3 {
+    width: 35%;
+  }
+  .order-summary.p-4.mt-4 {
+    margin-bottom: 0;
+  }
+  .danhmuc-tintuc .content-danhmuc .row.row-dautrangdanhmuc div:last-child {
+    margin-bottom: 10px;
+  }
+  .customer-container thead tr th,
+  .customer-container tbody tr td {
+    white-space: nowrap;
+  }
+  .customer-container .list-customer {
+    overflow-x: scroll;
+    padding-bottom: 10px;
+  }
+  .col-9.chinhsuasanpham,
+  .col-3.sidebarsanpham {
+    width: 100% !important;
+    min-width: unset;
+    padding-right: 0;
+    padding-left: 0;
+  }
+  #textArea {
+    border: 1px solid #e8e9ed !important;
+  }
+  #visual > form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .regular_price input,
+  .sale-price input {
+    margin-left: 0;
+    margin-top: 5px;
+  }
+  .input_price {
+    width: 100%;
+  }
+  .chi-tiet-san-pham .checkbox-trangthai {
+    margin-top: 20px;
+  }
+  #visual > form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .edit-tag-actions {
+    text-align: center;
+    padding-bottom: 0;
+  }
+  .help-icon {
+    display: none !important;
+  }
+  .form-group {
+    gap: 70px;
+  }
+  .col-9.content-addtintuc {
+    width: 100% !important;
+    padding: 0;
+  }
+  .row.container.sec-addtintuc > div {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .summary,
+  .anhsanpham,
+  .thesanpham,
+  .danhmuc-sanpham {
+    margin-top: 1.6rem;
+  }
+}
+
+@media screen and (max-width: 768px) and (min-width: 550px) {
+  .content > div:first-child {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+  .wrapped > div:nth-child(2) {
+    margin: 0 auto !important;
+    width: 100%;
+    max-width: 768px;
+    padding: 1.3rem !important;
+  }
+  .ser_menu .breadcrumb {
+    display: none;
+  }
+  .sidebar_main {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 10000;
+    display: none;
+    background: #fff;
+    transition: right linear 0.5s;
+    opacity: 0;
+  }
+  .chi-tiet-san-pham .checkbox-trangthai {
+    margin-top: 20px;
+  }
+  .sidebar_main.transform {
+    right: 0;
+    opacity: 1;
+    display: block;
+    z-index: 900000;
+  }
+  #bar-icon,
+  #notification-icon {
+    display: block;
+    font-size: 30px;
+    margin-left: 20px;
+  }
+  .header-right .user-info {
+    display: none;
+  }
+  .far.fa-comment-alt {
+    display: none;
+  }
+  .header-right {
+    flex-direction: row-reverse;
+    justify-content: flex-start;
+  }
+  .slide-item h2 {
+    min-height: 38.4px;
+  }
+  .tao-sp,
+  .btn-huongdan a {
+    float: unset;
+    width: 100%;
+    margin: 10px 0;
+  }
+  .btn-huongdan .tao-sp {
+    margin-top: 0;
+  }
+  .doanhthu-donhang .content-danhthu {
+    justify-items: center;
+  }
+  .content-tatcabaiviet table {
+    overflow-x: scroll;
+    display: block;
+  }
+  /* Thương hiệu */
+  .col-md-7,
+  .col-md-5 {
+    width: 100% !important;
+  }
+  .col-md-7 .col-inner-tbdanhmuc {
+    margin-left: 0 !important;
+  }
+  .col-md-7 {
+    padding-top: 15px !important;
+  }
+  .row.row-danhmuc {
+    padding-top: 0 !important;
+  }
+  .row.row-dautrangdanhmuc > div:last-child {
+    margin-bottom: 15px;
+  }
+  .row-actions {
+    display: block !important;
+    opacity: 1 !important;
+    height: auto !important;
+  }
+  .content-tatcasanpham .table-product {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    display: block;
+  }
+  .content-tatcabaiviet table tr,
+  .danhmuc-thuoctinh table tr,
+  .content-tatcasanpham thead tr th {
+    white-space: nowrap;
+  }
+  .content-tatcasanpham {
+    width: 100%;
+  }
+  .content-tatcasanpham .product-name {
+    width: 250px;
+    height: 150px;
+    display: block;
+  }
+  .content-tatcasanpham .product-price {
+    width: 110px;
+    display: block;
+  }
+  .product-category {
+    white-space: nowrap;
+  }
+  /* Sửa chọn hơn mức giá */
+  .chinh-sua-danh-muc .form-table th {
+    width: 160px;
+  }
+  .edit-tag-actions {
+    text-align: center;
+    padding-bottom: 0;
+  }
+  .order-detail .col-md-9,
+  .order-detail .col-md-3 {
+    width: 100%;
+  }
+  .order-detail .order-content.p-4 {
+    margin-bottom: 0;
+  }
+  .order .order-list {
+    overflow-x: scroll;
+  }
+  .order .status.status-paid,
+  .order thead tr th,
+  .order tbody tr td {
+    white-space: nowrap;
+  }
+  .col-md-7 .col-inner-tbdanhmuc {
+    padding-left: 0 !important;
+  }
+  .danhmuc-tintuc .row.row-dautrangdanhmuc,
+  .content-danhmuc .row.row-dautrangdanhmuc {
+    padding-top: 0;
+    padding-bottom: 10px;
+  }
+  .danhmuc-tintuc .row.row-dautrangdanhmuc h2,
+  .content-danhmuc .row.row-dautrangdanhmuc h2 {
+    padding-top: 0;
+  }
+  .customer-container .list-customer {
+    overflow-x: scroll;
+    padding-bottom: 10px;
+  }
+  .customer-container thead tr th,
+  .customer-container tbody tr td {
+    white-space: nowrap;
+  }
+  .text-end {
+    text-align: left !important;
+  }
+  .customer-container .title {
+    margin-bottom: 15px;
+  }
+  .header-title {
+    margin-bottom: 0px;
+  }
+  .col-9.chinhsuasanpham,
+  .col-3.sidebarsanpham {
+    width: 100% !important;
+    min-width: unset;
+    padding-right: 0;
+    padding-left: 0;
+  }
+  #textArea {
+    border: 1px solid #e8e9ed !important;
+  }
+  #visual > form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .regular_price input,
+  .sale-price input {
+    margin-left: 0;
+    margin-top: 5px;
+  }
+  .input_price {
+    width: 100%;
+  }
+  .dulieu-sanpham,
+  .mota-sanpham,
+  .xuatban,
+  .anhsanpham,
+  .albumanh-sanpham,
+  .thesanpham,
+  .danhmuc-sanpham,
+  .brand-sanpham {
+    margin-top: 25.6px;
+  }
+  .mota-sanpham {
+    padding-right: 0;
+  }
+  .th-method {
+    margin-left: 10px;
+  }
+  .payment_container .payment-method > div:last-child {
+    margin-right: 0;
+  }
+  .description {
+    margin-bottom: 10px;
+  }
+  .bank_tranfer .form-group {
+    gap: 76px;
+  }
+  .help-icon {
+    display: none !important;
+  }
+  .col-9.content-addtintuc {
+    width: 100% !important;
+  }
+  .row.container.sec-addtintuc > div {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .add_order .col-md-8,
+  .add_order .col-md-4 {
+    width: 100%;
+  }
+  .add_order .col-md-4 {
+    margin-top: 1.6rem;
+  }
+  .row.add_customer .col-8.main-content,
+  .row.add_customer .col-4 {
+    width: 100%;
+    padding-right: 0;
+    padding-left: 0;
+  }
+  .payment-methods {
+    overflow-x: scroll;
+  }
+  .content-danhmuc {
+    width: 100%;
+  }
+  .danhmuc-tintuc.danhmuc-thuoctinh table {
+    display: block;
+    overflow-x: scroll;
+  }
+  .chi-tiet-san-pham.ctsp .mota-sanpham {
+    padding-right: 1em;
+  }
+}
+@media screen and (max-width: 549px) {
+  /* COMMON */
+  .wrapped > div:nth-child(2) {
+    margin: 0 auto !important;
+    width: 68%;
+    max-width: 250px;
+    padding: 10px !important;
+  }
+  .container {
+    max-width: 96% !important;
+  }
+  .title-pagedanhmuc h2 {
+    padding-top: 0;
+  }
+  tbody tr td,
+  thead tr th {
+    white-space: nowrap;
+  }
+  li.page-item.disabled {
+    white-space: nowrap;
+  }
+  .col-md-7 {
+    margin-top: 15px !important;
+  }
+  .col-md-7 .col-inner-tbdanhmuc > div:nth-child(2) {
+    overflow-x: scroll;
+    overflow-y: hidden;
+  }
+  ul.pagination.justify-content-center {
+    margin: 0;
+  }
+  .btn-action > button {
+    white-space: nowrap;
+  }
+  .row-actions {
+    opacity: 1;
+    height: auto;
+  }
+  .row.row-danhmuc {
+    padding-bottom: 0;
+  }
+  .sreach-form {
+    float: unset;
+  }
+  .sreach-form > form {
+    justify-content: space-between;
+  }
+  /* header */
+  p {
+    font-size: 1em;
+  }
+  .header {
+    padding: 5px;
+  }
+  /* .ser_menu .breadcrumb,
+  .header-right i:first-child,
+  .header-right div:last-child {
+    display: none;
+  } */
+  .header-right {
+    gap: 10px;
+    justify-content: end;
+  }
+  .sermenu{margin: 0px 0px 0px 0px;}
+  .sidebar_main .menu ul{
+    margin-bottom: 10px;
+  }
+  .sidebar_main .menu ul li.menu-item {
+    margin: 0;
+  }
+  #bar-icon {
+    display: block;
+  }
+  .services_area.open{
+    width: 90%;
+  }
+  .sidebar_control{
+    display: none;
+  }
+  /* Thân */
+  .sidebar_main {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10000;
+    display: none;
+    background: #fff;
+    transition: all linear 0.5s;
+    opacity: 0;
+  }
+  .sidebar_main.transform {
+    left: 0;
+    opacity: 1;
+    display: block;
+    z-index: 900000;
+  }
+  .header-right i {
+    font-size: 24px;
+  }
+  i#notification-icon {
+    margin-left: unset;
+  }
+  .header-right .logo {
+    width: 42px;
+    overflow: hidden;
+    margin: auto;
+  }
+  /* Notify */
+  .sidebar {
+    width: 80%;
+    right: -100%;
+  }
+  /* DASHBOARD */
+  .content .dashboard .ban-con {
+    padding: 16px;
+    gap: 0;
+  }
+  .content .dashboard h2 {
+    font-weight: 700;
+  }
+  .content .dashboard .so-ngay {
+    margin-left: 0;
+  }
+  .content .dashboard .noidung-bancon {
+    padding-bottom: 5px;
+  }
+  .content .dashboard .noidung-bancon > p {
+    margin: 15px 0;
+  }
+  .content .dashboard > div:nth-child(2) .img-chat {
+    margin-left: 0;
+  }
+  .dashboard .slide-inner {
+    width: 260%;
+  }
+  .dashboard .slide-inner .slide-item {
+    width: 28%;
+    padding: 10px 10px;
+  }
+  .dashboard .slide-inner .slide-item p {
+    margin-bottom: 0;
+  }
+  .dashboard .huong-dan {
+    margin: 0 10px;
+    padding: 0;
+    align-content: center;
+    color: #ff5f14 !important;
+  }
+  .dashboard .tao-sp {
+    margin: 0;
+  }
+  .dashboard .slide-goiy {
+    padding: 0 6px 10px;
+  }
+  .dashboard .content-danhthu {
+    text-align: center;
+  }
+  .dashboard .ketqua,
+  .dashboard .trangthaidonhang,
+  .dashboard .content-wrapper {
+    padding: 16px;
+  }
+  .dashboard .ketqua h1 {
+    margin-left: 0;
+    font-weight: 700;
+  }
+  .dashboard .content-danhthu p {
+    padding-bottom: 0;
+  }
+  .dashboard .dashboard-order-summary {
+    gap: 10px;
+    margin-right: 0;
+    grid-template-columns: unset;
+  }
+  .dashboard .tabs {
+    overflow-y: scroll;
+    padding-bottom: 10px !important;
+    margin-bottom: 0;
+  }
+  .dashboard .slide-goiy h1 {
+    font-weight: 700;
+    margin-top: 16px;
+  }
+  .dashboard .slide-item h2 {
+    font-weight: 500;
+  }
+  .dashboard .trangthaidonhang h1 {
+    font-weight: 700;
+  }
+  .content .dashboard .tab.active {
+    border: none !important;
+    border-radius: 0 !important;
+  }
+  /* Add customer */
+  .add_customer > .col-8,
+  .add_customer > .col-4 {
+    width: 100%;
+    padding: 0;
+  }
+  /* Theme */
+  .color-picker {
+    width: auto;
+  }
+  /* Sửa chọn mức giá */
+  .chinh-sua-danh-muc {
+    padding: 0;
+  }
+  .chinh-sua-danh-muc tbody {
+    display: block;
+  }
+  .chinh-sua-danh-muc tbody > tr {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 0;
+  }
+  .chinh-sua-danh-muc tbody p {
+    margin-bottom: 5px;
+  }
+  .chinh-sua-danh-muc tbody > tr > th,
+  .chinh-sua-danh-muc tbody > tr > td {
+    padding: 0 !important;
+  }
+  .chinh-sua-danh-muc tbody > tr > th > label {
+    margin-bottom: 5px;
+  }
+  .mota-sanpham {
+    margin-top: 0;
+  }
+  .edit-tag-actions {
+    padding-top: 0;
+  }
+  .page-chinh-sua-thuong-hieu .mota-sanpham {
+    padding: 0;
+  }
+  .page-chinh-sua-danh-muc.page-chinh-sua-thuong-hieu.row-dautrangchinhsuadanhmuc {
+    padding: 0 !important;
+  }
+  /* report_overview */
+  .add-filter-btn {
+    width: 100%;
+  }
+  .overviewbon.col-md-3 {
+    padding: 0;
+  }
+  .filter-table {
+    width: 100%;
+  }
+  .overviewhai.col-md-6 {
+    padding: 0;
+  }
+  /* payment-method */
+  .payment-container .th-method {
+    margin-left: 0;
+  }
+  /* oderdetail */
+  .table th.text-center {
+    padding: 6px 0;
+  }
+  /* Tin tức */
+  .filters-top {
+    flex-direction: column;
+    align-items: center;
+    border-bottom: none;
+  }
+  .content-tatcabaiviet nav {
+    position: unset;
+  }
+  .content-tatcabaiviet .filters,
+  .content-tatcabaiviet .pagination,
+  .content-tatcasanpham .action-container {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    margin: 15px 0 15px 0;
+    padding-bottom: 10px;
+  }
+  .content-tatcabaiviet ul.pagination {
+    padding-bottom: 0;
+  }
+  .content-tatcabaiviet .actions {
+    margin-bottom: 0;
+  }
+  .content-tatcabaiviet button.apply,
+  .content-tatcabaiviet li.page-item.disabled,
+  .thuonghieu.danhmuc-tintuc li.page-item.disabled,
+  .content-tatcasanpham li.page-item.disabled,
+  .content-tatcasanpham .action-container > button,
+  .thuonghieu.danhmuc-tintuc .btn-action button {
+    white-space: nowrap;
+  }
+  .content-tatcabaiviet div.pagination {
+    display: none;
+  }
+  .content-tatcabaiviet table,
+  .thuonghieu.danhmuc-tintuc table,
+  .danhmuc-thuoctinh table {
+    overflow-x: scroll;
+    display: block;
+  }
+  .content-tatcabaiviet table tr,
+  .danhmuc-thuoctinh table tr,
+  .content-tatcasanpham thead tr th {
+    white-space: nowrap;
+  }
+  .content-tatcabaiviet table tbody tr td:nth-child(2),
+  .content-tatcasanpham .product-name {
+    white-space: initial;
+    overflow: hidden;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
+    width: 190px;
+    height: 130px;
+  }
+  .content-tatcabaiviet thead tr th,
+  .content-tatcabaiviet tbody tr td {
+    z-index: 1;
+  }
+  .content-tatcabaiviet tbody > :nth-child(odd) td:nth-child(2),
+  .content-tatcasanpham .table-product tbody > :nth-child(odd) td:nth-child(2) {
+    background-color: #fff;
+    z-index: 2;
+  }
+  .content-tatcabaiviet tbody > :nth-child(even) td:nth-child(2),
+  .content-tatcasanpham tbody > :nth-child(even) td:nth-child(2) {
+    background-color: rgb(244, 246, 248);
+    z-index: 2;
+  }
+  .content-tatcabaiviet .search-box {
+    margin-bottom: 0;
+  }
+  .content-tatcabaiviet .subsubsub {
+    margin: 0 0 5px 0;
+  }
+  /* Thương hiệu */
+  .danhmuc-tintuc .col-md-7 .col-inner-tbdanhmuc {
+    margin-left: 0;
+  }
+  .thuonghieu.danhmuc-tintuc .title-danhmuc h4 {
+    margin-top: 0;
+  }
+  .thuonghieu.danhmuc-tintuc .sreach-form {
+    float: unset;
+  }
+  .thuonghieu.danhmuc-tintuc .action-container button {
+    margin: 0 auto;
+  }
+  .thuonghieu.danhmuc-tintuc
+    .col-md-7
+    .col-inner-tbdanhmuc
+    .action-container:first-child
+    > nav {
+    display: none;
+  }
+  .thuonghieu.danhmuc-tintuc .col-md-7 .col-inner-tbdanhmuc nav {
+    margin: 0 auto;
+  }
+  .thuonghieu.danhmuc-tintuc .pagination.justify-content-center {
+    margin-bottom: 0;
+  }
+  .thuonghieu.danhmuc-tintuc
+    .col-md-7
+    .table-product
+    > table
+    > tbody
+    > tr
+    > td:nth-child(5) {
+    width: 10%;
+  }
+  .thuonghieu.danhmuc-tintuc .form-field label {
+    margin-bottom: 5px;
+  }
+  .thuonghieu.danhmuc-tintuc .action-container:first-child {
+    display: none;
+  }
+  /* Thuộc tính */
+  .danhmuc-thuoctinh .col-md-7 {
+    margin-top: 15px;
+  }
+  .danhmuc-thuoctinh .col-md-7 .col-inner-tbdanhmuc .table-product {
+    max-width: 398px;
+  }
+  .danhmuc-thuoctinh .row-actions,
+  .content-tatcasanpham .row-actions {
+    opacity: 1;
+    height: auto;
+    z-index: 1;
+  }
+  /* Tat ca san pham */
+  .content-tatcasanpham {
+    width: 100%;
+  }
+  .content-tatcasanpham .table-product {
+    overflow-x: scroll;
+    overflow-y: hidden;
+  }
+  .content-tatcasanpham .action-container {
+    display: flex;
+  }
+  .content-tatcasanpham .action-container nav {
+    position: unset;
+  }
+  .content-tatcasanpham .product-name {
+    width: 200px;
+    height: 150px;
+  }
+  /* Phương thức thanh toán */
+  .payment-container .method-name > i {
+    display: none;
+  }
+  .payment-container .method-name,
+  .payment-container button btn {
+    white-space: nowrap;
+  }
+  .payment-container .method-name span {
+    padding-left: 0px;
+  }
+  .payment-container .method-name > div:nth-child(2) {
+    margin-left: 50px;
+  }
+  .payment-container .payment-method > div:nth-child(2) {
+    margin-left: 45px;
+  }
+  /* Don hang */
+  .order .status.status-paid,
+  .order thead tr th,
+  .order tbody tr td {
+    white-space: nowrap;
+  }
+  .order .order-list {
+    overflow-x: scroll;
+  }
+  .btn.btn-secondary {
+    font-size: 12px;
+  }
+  .order h2 {
+    font-size: 16px;
+  }
+  /* Danh mục tin tức */
+  .container.danhmuc-tintuc .sreach-form {
+    float: unset;
+  }
+  .container.danhmuc-tintuc .page-item.disabled,
+  .container.danhmuc-tintuc .btn-action > button {
+    white-space: nowrap;
+  }
+  .container.danhmuc-tintuc .btn-action {
+    display: flex;
+  }
+  .container.danhmuc-tintuc .col-md-7 {
+    margin-top: 15px;
+  }
+  .content-danhmuc {
+    width: 100%;
+  }
+  .content-danhmuc .col-md-7 .col-inner-tbdanhmuc > div:nth-child(2) {
+    padding: 10px;
+  }
+  .action-container {
+    overflow-x: scroll;
+    overflow-y: hidden;
+  }
+  .container.danhmuc-tintuc .col-inner-tbdanhmuc .action-container:first-child {
+    display: none;
+  }
+  .container.danhmuc-tintuc .col-inner-tbdanhmuc {
+    padding-left: 0;
+  }
+  .container.danhmuc-tintuc .pagination.justify-content-center {
+    margin-bottom: 0;
+  }
+  thead tr th:nth-child(2),
+  tbody tr td:nth-child(2) {
+    left: 45px;
+  }
+  .content-danhmuc .col-inner-tbdanhmuc {
+    padding-left: 0;
+    margin-left: 0;
+  }
+  /* Danh mục sản phẩm */
+  .content-danhmuc .btn-action {
+    display: flex;
+  }
+  .content-danhmuc .table-product .action-container {
+    display: none;
+  }
+  /* Khách hàng */
+  .customer-container .list-customer {
+    overflow-x: scroll;
+  }
+  .customer-container .title {
+    flex-direction: column;
+    align-items: unset;
+    margin-bottom: 10px;
+  }
+  .customer-container .title h2 {
+    margin-bottom: 15px;
+  }
+  /* Chi tiết sản phẩm */
+  .chi-tiet-san-pham.ctsp .col-9.chinhsuasanpham {
+    width: 100% !important;
+    min-width: unset;
+    max-width: unset;
+    padding-right: 0;
+  }
+  .regular_price {
+    display: flex;
+    flex-direction: column;
+  }
+  .regular_price > label,
+  .sale-price .input_price {
+    margin-left: 0;
+    margin-top: 5px;
+  }
+  .options_group .popduct-code > label {
+    white-space: nowrap;
+  }
+  .popduct-code,
+  .popduct-GTIN,
+  .quanly-kho,
+  .checkbox-trangthai {
+    flex-direction: column;
+    align-items: unset;
+    gap: unset;
+  }
+  .chi-tiet-san-pham .GTIN-prodcut {
+    margin-left: 0;
+  }
+  .input_price {
+    margin-left: 0 !important;
+  }
+  .chi-tiet-san-pham div.quanly-kho {
+    align-items: unset;
+  }
+  .expand-close {
+    display: block;
+    width: 100%;
+    margin-top: 15px;
+    display: none !important;
+  }
+  .dulieu-sanpham .tab-content {
+    padding-top: 0;
+  }
+  .attribute_data tbody > tr {
+    display: flex;
+    flex-direction: column;
+  }
+  .attribute_values {
+    width: fit-content;
+  }
+  .attribute_data tbody > tr > td:nth-child(2) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .attribute_data tbody > tr > td:nth-child(2) > button {
+    width: fit-content;
+  }
+  .col-3.sidebarsanpham {
+    width: 100% !important;
+    padding-left: 0;
+    margin-top: 15px;
+  }
+  /* chinhsuathuonghieu.html */
+  /* Chinh sua thuoc tinh */
+  /* Chinh sua danh muc */
+  .row-dautrangchinhsuadanhmuc input,
+  .row-dautrangchinhsuadanhmuc select {
+    width: 100%;
+  }
+  .row-dautrangchinhsuadanhmuc tbody tr td {
+    white-space: unset;
+  }
+  .row-dautrangchinhsuadanhmuc .mota-sanpham {
+    padding: 0;
+  }
+  .edit-tag-actions {
+    display: flex;
+    justify-content: center;
+  }
+  .bank_tranfer .form-group {
+    gap: 20px;
+    flex-direction: column;
+  }
+  .form-group .help-icon {
+    display: none;
+  }
+  .bank_tranfer .form-group:nth-child(4) > label input.form-control {
+    margin-left: 20px;
+  }
+  /* addtintuc */
+  .col-9.content-addtintuc {
+    width: 100% !important;
+  }
+  /* addorder */
+  .taodonhang {
+    overflow-x: scroll;
+    display: block;
+    overflow-y: hidden;
+    padding-bottom: 15px;
+  }
+  /* Theme */
+  .theme img,
+  .theme select,
+  .theme .noidung {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  .color-row {
+    flex-direction: column;
+    justify-content: unset;
+    align-items: unset;
+  }
+  .color-picker > label {
+    display: none;
+  }
+  #chitiet-style1 .color-picker > label {
+    display: block;
+  }
+  .theme .column {
+    white-space: nowrap;
+  }
+  .settings-table {
+    overflow-x: scroll;
+    display: block;
+  }
+  .accordion-flex {
+    flex-direction: column;
+  }
+  .content-tatcasanpham .table-product div:last-child {
+    display: none;
+  }
+  .subsubsub {
+    margin-top: 0;
+    margin-bottom: 5px;
+  }
+  .content-tatcasanpham .search-box {
+    margin-bottom: 0;
+  }
+  .content-tatcasanpham .row-actions {
+    display: block !important;
+  }
+  .order-detail .col-md-9 .table {
+    overflow-x: scroll;
+    display: block;
+  }
+  .order-detail .order-content.p-4 {
+    margin-bottom: 0;
+  }
+  .popup-footer,
+  .popup-footer div:last-child {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+  .btn-cc.btn-default,
+  .popup-footer div:last-child button {
+    width: 80%;
+    margin-left: 0;
+    margin-top: 10px;
+  }
+  .popup-content {
+    width: 400px;
+  }
+  .radio-option label::before,
+  .radio-option label::after {
+    content: none;
+  }
+  .row.row-dautrangdanhmuc {
+    padding-top: 0 !important;
+    padding-bottom: 10px;
+  }
+  .customer-container .title div:last-child {
+    display: flex;
+    justify-content: space-between;
+  }
+  .customer-list-container .card.mb-4 .col-md-4 {
+    padding-right: 0;
+  }
+  .customer-list-container .stat-card {
+    margin-bottom: 0;
+  }
+  .card.stat-card {
+    margin-bottom: 15px;
+  }
+  .col-md-8.chitieu {
+    margin-left: 8px;
+  }
+  .chi-tiet-san-pham.ctsp .col-9.chinhsuasanpham .detailproduct-name {
+    margin-bottom: 10px;
+  }
+  .mota-sanpham p {
+    padding-bottom: 15px;
+    margin-bottom: 10px;
+  }
+  #textArea {
+    border: 1px solid #e8e9ed !important;
+  }
+  .chi-tiet-san-pham.ctsp #select-thuoctinh {
+    margin-top: 15px;
+    width: 100%;
+  }
+  .chi-tiet-san-pham td.attribute_name label {
+    white-space: pre-wrap;
+  }
+  .chi-tiet-san-pham .attribute_data tbody,
+  .chi-tiet-san-pham .attribute_data tbody tr,
+  .chi-tiet-san-pham .attribute_data tbody tr td {
+    padding: 0;
+  }
+  #attributes
+    div.accordion-content
+    > div
+    > table
+    > tbody
+    > tr:nth-child(1)
+    > td:nth-child(2)
+    > select {
+    height: 32px;
+  }
+  .chi-tiet-san-pham .attribute_data tbody tr td button {
+    width: 100%;
+    margin-bottom: 10px;
+    margin-right: 0 !important;
+  }
+  .row-dautrangchinhsuadanhmuc .edit-tag-actions {
+    padding-bottom: 5px;
+  }
+  .thuonghieu.danhmuc-tintuc #bulkAction {
+    margin-right: 5px;
+  }
+  .thuonghieu.danhmuc-tintuc .action-container .btn-action {
+    margin-left: 0;
+  }
+  .thuonghieu.danhmuc-tintuc h2 {
+    margin-bottom: 5px;
+  }
+  .payment_container .th-method {
+    margin-left: 20px;
+  }
+  .payment_container .payment-header > div:last-child {
+    margin-right: 20px;
+  }
+  .payment_container .payment-method > div:last-child {
+    margin-right: 0;
+  }
+  .method-name span {
+    padding-left: 0;
+  }
+  .save-button {
+    margin-top: 15px;
+  }
+  .bank_tranfer .form-group label {
+    width: 100%;
+  }
+  .bank_tranfer .btn.btn-save {
+    margin-top: 0;
+  }
+  .sec-addtintuc .col-9.content-addtintuc {
+    padding: 0;
+  }
+  .sec-addtintuc > div:first-child {
+    padding: 0;
+  }
+  .sec-addtintuc .tab {
+    padding-top: 0;
+  }
+  #visual form {
+    align-items: center;
+  }
+  #visual form input {
+    margin-top: 10px !important;
+  }
+  .sec-addtintuc #excerpt {
+    margin-bottom: 12px;
+  }
+  .sec-addtintuc .summary-header > span {
+    padding-left: 0;
+  }
+  .sec-addtintuc .publish-panel {
+    padding-left: 0;
+  }
+  .major-publishing-actions {
+    padding: 10px 0 10px 10px;
+  }
+  .button-capnhap a {
+    padding: 7px 12px;
+  }
+  .add_order .col-md-4 {
+    margin-top: 1.5rem;
+  }
+  .createOrderBtn {
+    margin-bottom: 0;
+  }
+}
+
+@media screen and (min-width: 950px) {
+  #bar-icon {
+    display: none;
+  }
+}

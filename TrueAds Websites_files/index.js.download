@@ -1,0 +1,224 @@
+let listproduct = undefined;
+$(document).ready(function () {
+  get_product();
+  listproduct = new DataTable("#listproduct", {
+    paging: true, // Bật phân trang
+    pageLength: 10,
+    buttons: [
+      {
+        extend: "excel",
+        class: "buttons-excel",
+        filename: "DanhSachSanPham",
+        title: "Danh Sách Sản Phẩm",
+      },
+    ],
+    columns: [
+      { data: "check" },
+      { data: "image" },
+      { data: "name" },
+      { data: "code" },
+      { data: "warehouse" },
+      { data: "pice" },
+      { data: "category" },
+      { data: "tab" },
+      { data: "date" },
+      { data: "brands" },
+      { data: "status" },
+    ],
+    dom: 'rt<"bottom pagination-container"lfp><"clear">',
+    language: {
+      lengthMenu: "Hiển thị _MENU_ bản ghi mỗi trang", // Tùy chỉnh văn bản
+      info: "Đang hiển thị từ _START_ đến _END_ của _TOTAL_ bản ghi", // Hiển thị thông tin bản ghi
+      paginate: {
+        first: "«",
+        previous: "‹",
+        next: "›",
+        last: "»",
+      },
+    },
+    initComplete: function () {
+      $(".dt-search").hide();
+      $("#post-search-input").on("keyup", function () {
+        listproduct.search(this.value).draw();
+      });
+    },
+    drawCallback: function () {
+      // Thêm class vào các nút phân trang
+      $(".dataTables_paginate .paginate_button").addClass("btnstyle");
+    },
+  });
+});
+function deleteProduct(productId) {
+  const confirmation = confirm("Bạn có chắc muốn xóa sản phẩm này không?");
+  const token = localStorage.getItem("jwt_access_token");
+  const tokenRefesh = localStorage.getItem("jwt_access_token");
+
+  if (confirmation) {
+    const productElement = document.getElementById(`product-${productId}`);
+    if (productElement) {
+      productElement.remove();
+    }
+    const urlDeleteProduct = `${location.origin}/wp-json/api/v1/products/?id=${productId}`;
+
+    $.ajax({
+      url: urlDeleteProduct,
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        tokenRefresh: `Bearer ${tokenRefesh}`,
+      },
+      success: function (response) {
+        Toast.success("Sản phẩm đã được xóa thành công.");
+        loadProduct(); // Tải lại danh sách sản phẩm
+      },
+      error: function (xhr, status, error) {
+        console.error("Lỗi khi xóa sản phẩm:", error);
+        alertToast.error("Đã xảy ra lỗi khi kết nối đến API.");
+        loadProduct();
+      },
+    });
+  }
+}
+
+// Hàm xem chi tiết sản phẩm
+function viewProductDetail(productId) {
+  const homeUrl = getBaseUrl();
+  // window.location.href = `${posUrl}/?arg=dashboard&param=detailproduct&id=${productId}`;
+}
+
+function applyAction() {
+  let category = $(".category").val();
+  console.log(category);
+  listproduct.column(6).search(category).draw();
+}
+
+async function get_product() {
+  let data = {
+    action: "get_products",
+    data: {},
+  };
+  let response = await AjaxData(data, "get");
+  loadproduct(response.data);
+}
+
+function loadproduct(response) {
+  const homeUrl = getBaseUrl();
+  listproduct.clear();
+  const products =
+    typeof response === "string" ? JSON.parse(response) : response;
+  const formattedProducts = products.map((product) => ({
+    check: `<input type="checkbox" class="product_id" value="${product.id}" />`,
+    image: `<img style="width: 100%; " src="${product.img_url}" />`,
+    name:
+      (product.name || "No Name") +
+      `<div class="row-actions" style="cursor: pointer;">
+                                                    <a href="${homeUrl}/?arg=products&param=edit&id=${product.id}" class="edit">
+                                                        Chỉnh sửa
+                                                    </a>|
+                                                    <span class="delete" onclick="delete_product('${product.id}')" >Xóa</span>
+                                                </div>`,
+    code: product.sku || "N/A",
+    warehouse: product.stock_status || "In Stock",
+    pice: product.price + "/" + product.regular_price || "N/A",
+    category:
+      product.categories && product.categories.length > 0
+        ? product.categories.map((category) => category.name).join(", ")
+        : "No categories",
+    tab:
+      product.tags && product.tags.length > 0
+        ? product.tags.map((tag) => tag.name).join(", ")
+        : "No tags",
+    status:
+      product.status == "publish"
+        ? `<label class="toggle-switch item_status" onclick="item_status(${product.id},event)">
+            <input type="checkbox"  checked>
+            <span class="slider"></span></label>`
+        : `<label class="toggle-switch" onclick="item_status(${product.id},event)">
+            <input type="checkbox" >
+            <span class="slider"></span></label>`,
+    date: product.date_created || "N/A",
+    brands:
+      product.brands && product.brands.length > 0
+        ? product.brands.map((brand) => brand.name).join(", ")
+        : "No Brands",
+  }));
+  listproduct.clear();
+  listproduct.rows.add(formattedProducts);
+  listproduct.draw();
+}
+getSelectCategories();
+async function getSelectCategories() {
+  let data = {
+    action: "get_all_categories",
+    data: {},
+  };
+  let response = await AjaxData(data, "get");
+  if (response.data) {
+    loadhtmcate(response.data);
+  }
+}
+
+function loadhtmcate(response) {
+  $.each(response, function (key, item) {
+    let html = ` <option value="${item.name}"> ${item.name}</option> `;
+    $(".category").append(html);
+  });
+}
+$(".checkstatus").on("click", async function () {
+  let value = $(".statusitem").val();
+  let listproductid = get_data_checked($(".product_id"));
+  if (value == "delete") {
+    let data = {
+      action: "delete_product",
+      data: { listproductid },
+    };
+    let response = await AjaxData(data, "post");
+    if (response.success) {
+      get_product();
+    }
+  }
+});
+$(".checkstatus1").on("click", async function () {
+  let value = $(".statusitem1").val();
+  let listproductid = get_data_checked($(".product_id"));
+  if (value == "delete") {
+    let data = {
+      action: "delete_product",
+      data: { listproductid },
+    };
+    let response = await AjaxData(data, "post");
+    if (response.success) {
+      get_product();
+    }
+  }
+});
+async function delete_product(id) {
+  let listproductid = [];
+  listproductid.push(id);
+  let data = {
+    action: "delete_product",
+    data: { listproductid },
+  };
+  console.log(data);
+  let response = await AjaxData(data, "post");
+  if (response.success) {
+    get_product();
+  }
+}
+async function item_status(id, event) {
+  const isChecked = event.target.checked;
+  if (isChecked != undefined) {
+    let data = {
+      action: "update_product_status",
+      data: {
+        id: id,
+        status: isChecked ? "publish" : "private",
+      },
+    };
+    let response = await AjaxData(data, "post");
+  }
+}
+
+$("#export-data").on("click", function () {
+  $("#listproduct").DataTable().button(".buttons-excel").trigger();
+});
