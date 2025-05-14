@@ -18,3 +18,18 @@ document.addEventListener("DOMContentLoaded", function () {
 });
   
 
+
+document.addEventListener('DOMContentLoaded', function () {
+const tabs = document.querySelectorAll('.thesanpham .tabs .tab');
+
+tabs.forEach(tab => {
+    tab.addEventListener('click', function () {
+    // Bỏ class active-tab ở tất cả tab
+    tabs.forEach(t => t.classList.remove('active-tab'));
+    
+    // Thêm class active-tab vào tab được click
+    this.classList.add('active-tab');
+    });
+});
+});
+

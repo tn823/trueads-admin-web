@@ -1,0 +1,778 @@
+let proparam = getParam("param");
+let imageEdit = {
+  image: "",
+  gallery: [],
+};
+document.addEventListener("DOMContentLoaded", () => {
+  if (proparam == "create") {
+    $(".viewEdit").remove();
+  } else {
+    $(".AddOrUpdateProduct").remove();
+    let id = getParam("id").toString();
+    product_info(id);
+  }
+  $("#description").summernote({
+    placeholder: "",
+    tabsize: 2,
+    height: 120,
+    toolbar: [
+      ["style", ["style"]],
+      ["font", ["bold", "underline", "clear"]],
+      ["color", ["color"]],
+      ["para", ["ul", "ol", "paragraph"]],
+      ["table", ["table"]],
+      ["insert", ["link", "picture", "video"]],
+      ["view", ["fullscreen", "codeview", "help"]],
+    ],
+  });
+  $("#longdescription").summernote({
+    placeholder: "",
+    tabsize: 2,
+    height: 120,
+    toolbar: [
+      ["style", ["style"]],
+      ["font", ["bold", "underline", "clear"]],
+      ["color", ["color"]],
+      ["para", ["ul", "ol", "paragraph"]],
+      ["table", ["table"]],
+      ["insert", ["link", "picture", "video"]],
+      ["view", ["fullscreen", "codeview", "help"]],
+    ],
+  });
+
+  $("#image-upload").change(function () {
+    const file = this.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        $("#product_image")
+          .attr("src", e.target.result)
+          .data("src", e.target.result)
+          .show();
+        $("#image-name").text(file.name).show();
+        $("#remove-image").show();
+        $("#preview-container").show();
+      };
+      reader.readAsDataURL(file);
+    } else {
+      $("#image-name").hide();
+      $("#remove-image").hide();
+    }
+  });
+
+  $("#image-uploads").change(function () {
+    const files = this.files;
+    const $previewContainer = $("#previews-container");
+    if (files.length > 0) {
+      Array.from(files).forEach((file) => {
+        if (file.type.startsWith("image/")) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            const $img = $("<img>")
+              .attr("src", e.target.result)
+              .addClass("product_images");
+            $previewContainer.append($img);
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+  });
+  getProductType();
+  getSelecttags();
+  getSelectbrands();
+  product_attributes();
+  getSelectCategories();
+});
+function openTabDetail(tabName) {
+  var tabs = document.querySelectorAll(".tab-container-chitiet .tab");
+  var contents = document.querySelectorAll("#visual, #text");
+
+  contents.forEach((content) => (content.style.display = "none"));
+  tabs.forEach((tab) => tab.classList.remove("active"));
+
+  document.getElementById(tabName).style.display = "block";
+  event.currentTarget.classList.add("active");
+}
+
+function openTabData(tabName) {
+  var tabs = document.querySelectorAll(".sidebar-tab .tab");
+  var contents = document.querySelectorAll(
+    "#overview, #inventory, #attributes"
+  );
+
+  contents.forEach((content) => (content.style.display = "none"));
+  tabs.forEach((tab) => tab.classList.remove("active"));
+
+  document.getElementById(tabName).style.display = "block";
+  event.currentTarget.classList.add("active");
+}
+
+function insertListItem() {
+  document.getElementById("textArea").value += "<li>Nội dung mục mới</li>\n";
+}
+
+function insertUnorderedList() {
+  document.getElementById("textArea").value +=
+    "<ul><li>Mục 1</li><li>Mục 2</li></ul>\n";
+}
+
+function toggleAccordion(element) {
+  const allItems = $(".accordion-item");
+  allItems.each((item) => {
+    if (item !== element.parentElement) {
+      item.classList.remove("active");
+      item.querySelector(".accordion-content").style.display = "none";
+      item.querySelector("span").textContent = "+";
+    }
+  });
+  const content = element.nextElementSibling;
+  const isOpen = content.style.display === "block";
+  content.style.display = isOpen ? "none" : "block";
+  element.querySelector("span").textContent = isOpen ? "+" : "-";
+  element.parentElement.classList.toggle("active", !isOpen);
+}
+let selectedCategoryIds = [];
+let categoriesData = [];
+
+// async function updateProduct() {
+//   var description = quill.root.innerHTML;
+//   document.getElementById("product-description").value = description;
+//   const galleryFiles = document.getElementById("productGalleryImages").files[0];
+//   const categoryIds = getSelectedCategoryIds();
+//   const id = document.getElementById("productid").value;
+//   const name = document.getElementById("productName").value;
+//   const regular_price = document.getElementById("productRegularPrice").value;
+//   const sale_price = document.getElementById("productSalePrice").value;
+//   const imagess = document.getElementById("productImage").files[0];
+//   if (!name || !regular_price) {
+//     alert("Vui lòng điền đầy đủ thông tin sản phẩm.");
+//     return;
+//   }
+
+//   const formData = new FormData();
+//   formData.append("imagess", imagess);
+
+//   formData.append("description", description);
+
+//   formData.append("id", id);
+//   formData.append("name", name);
+//   formData.append("regular_price", regular_price);
+//   formData.append("sale_price", sale_price);
+//   const token = localStorage.getItem("jwt_access_token");
+//   const tokenRefresh = localStorage.getItem("jwt_access_token");
+//   await AjaxData({}, "POST")
+//   $.ajax({
+//     url: `${originUrl}//wp-json/api/v1/products/`,
+//     type: "POST",
+//     data: formData,
+//     headers: {
+//       Authorization: `Bearer ${token}`,
+//       tokenRefresh: `Bearer ${tokenRefresh}`,
+//     },
+//     contentType: false,
+//     processData: false,
+//     success: function (response) {
+//       console.log("Cập nhật thành công:", response);
+//       document.getElementById(
+//         "result"
+//       ).innerHTML = `<h4>Sản phẩm đã được cập nhật:</h4>`;
+//       if (response && response.data) {
+//         const product = response.data;
+//         if (product.imagess) {
+//           const imagePreview = document.getElementById("productImagePreview");
+//           const img = document.createElement("img");
+//           img.src = product.imagess;
+//           img.style.width = "100%";
+//           img.style.height = "auto";
+//           imagePreview.innerHTML = "";
+//           imagePreview.appendChild(img);
+//         }
+
+//         if (response && response.data && response.data.gallery_images) {
+//           renderGalleryPreview(response.data.gallery_images);
+//         }
+
+//         if (product.categories && product.categories.length > 0) {
+//           const categoryPreview = document.getElementById(
+//             "productCategoryPreview"
+//           );
+//           categoryPreview.innerHTML = "";
+
+//           product.categories.forEach((category) => {
+//             const categoryElem = document.createElement("p");
+//             categoryElem.textContent = category.name;
+//             categoryPreview.appendChild(categoryElem);
+//           });
+//         }
+//       }
+//     },
+//     error: function (xhr, status, error) {
+//       console.error("Lỗi khi gửi yêu cầu:", error);
+//       alert("Có lỗi xảy ra khi cập nhật sản phẩm. Vui lòng thử lại.");
+//     },
+//   });
+// }
+
+function setupImagePreview(inputId, previewId, multiple = false) {
+  const inputElement = document.getElementById(inputId);
+  const previewElement = document.getElementById(previewId);
+
+  inputElement.addEventListener("change", (event) => {
+    const files = event.target.files;
+
+    if (!multiple) {
+      previewElement.innerHTML = "";
+
+      if (files.length > 0) {
+        const img = document.createElement("img");
+        img.src = URL.createObjectURL(files[0]);
+        img.style.width = "100%";
+        img.style.height = "auto";
+        previewElement.appendChild(img);
+
+        img.onload = () => URL.revokeObjectURL(img.src);
+      }
+    } else if (multiple) {
+      Array.from(files).forEach((file) => {
+        const img = document.createElement("img");
+        img.src = URL.createObjectURL(file);
+        img.style.width = "50px";
+        img.style.height = "auto";
+        img.style.marginRight = "10px";
+        previewElement.appendChild(img);
+
+        img.onload = () => URL.revokeObjectURL(img.src);
+      });
+    }
+
+    previewElement.style.display = "flex";
+  });
+}
+
+function toggleCategory(categoryId) {
+  const index = selectedCategoryIds.indexOf(categoryId);
+
+  if (index === -1) {
+    selectedCategoryIds.push(categoryId);
+  } else {
+    selectedCategoryIds.splice(index, 1);
+  }
+
+  const selectedCategories = selectedCategoryIds
+    .map((id) => {
+      const category = categoriesData.find((cat) => cat.id === id);
+      return category
+        ? { id: category.id, name: category.name, slug: category.slug }
+        : null;
+    })
+    .filter((category) => category !== null);
+
+  console.log("Danh mục đã chọn:", selectedCategories);
+}
+
+function getSelectedCategoryIds() {
+  return selectedCategoryIds;
+}
+
+function setupGalleryImagePreview(inputId, previewId) {
+  const inputElement = document.getElementById(inputId);
+  const previewElement = document.getElementById(previewId);
+
+  inputElement.addEventListener("change", (event) => {
+    const files = event.target.files;
+
+    previewElement.innerHTML = "";
+
+    if (files.length > 0) {
+      Array.from(files).forEach((file) => {
+        const img = document.createElement("img");
+        img.src = URL.createObjectURL(file);
+        img.style.width = "80px";
+        img.style.height = "80px";
+        img.style.marginRight = "10px";
+        img.style.marginBottom = "10px";
+        previewElement.appendChild(img);
+
+        img.onload = () => URL.revokeObjectURL(img.src);
+      });
+    }
+  });
+}
+
+function renderGalleryPreview(galleryImages) {
+  const galleryPreview = document.getElementById("productGalleryPreview");
+  galleryPreview.innerHTML = "";
+
+  if (galleryImages && galleryImages.length > 0) {
+    galleryImages.forEach((imageUrl) => {
+      const img = document.createElement("img");
+      img.src = imageUrl;
+      img.style.width = "80px";
+      img.style.height = "80px";
+      img.style.marginRight = "10px";
+      img.style.marginBottom = "10px";
+      galleryPreview.appendChild(img);
+    });
+  }
+}
+
+// đóng và mở thuộc tính
+$(".expand_all").on("click", function () {
+  $(".accordion-thuoctinh").css("display", "block");
+});
+$(".close_all").on("click", function () {
+  $(".accordion-thuoctinh").css("display", "none");
+});
+
+async function getProductType() {
+  let data = {
+    action: "get_product_type",
+    data: {},
+  };
+  let response = await AjaxData(data, "get");
+  if (response.data) {
+    loadhtmlproducttype(response.data);
+  }
+}
+
+function loadhtmlproducttype(response) {
+  $.each(response, function (key, item) {
+    if (item.name !== "external" && item.name !== "grouped") {
+      let html = `<option value="${item.name}">${item.name}</option>`;
+      $("#product_data").append(html);
+    }
+  });
+}
+
+$("#product_warehouse").on("click", function () {
+  if ($("#product_warehouse").is(":checked")) {
+    $("#product_stock").css("display", "block");
+  } else {
+    $("#product_stock").css("display", "none");
+  }
+});
+/// tạo sản phẩm
+$(".AddOrUpdateProduct").on("click", async function () {
+  const homeUrl = getBaseUrl();
+  let name = $("#name_product").val();
+  let longdescription = $("#longdescription").summernote("code");
+  let product_id = $("#product_id").val();
+  let product_data = $("#product_data").val();
+  let sale_price = $("#sale_price_product").val();
+  let price = $("#price_product").val();
+  let product_code = $("#product_code").val();
+  let manage_stock = $("#product_warehouse").is(":checked");
+  let stock_quantity = $("#product_stock").val();
+  let product_GTIN = $("#product_GTIN").val();
+  let product_status = $('input[name="product_status"]:checked').val();
+  let sold_individually = $("#sold_individually").is(":checked"); // check
+  let description = $("#description").summernote("code");
+
+  let product_image = $("#product_image").attr("src");
+  if (product_image && product_image.startsWith("data:image")) {
+    const base64Image = product_image.split(",")[1];
+    compressBase64Image(base64Image)
+      .then((compressedImage) => {
+        product_image = `data:image/jpeg;base64,${compressedImage}`;
+      })
+      .catch((err) => console.error("Error compressing product_image:", err));
+  }
+  let meta_data = [];
+  let tag_item = get_data_checked($(".tag_item"));
+  let category_item = get_data_checked($(".category_item"));
+  let brand_item = get_data_checked($(".brand_item"));
+  let attributes = get_attributes();
+  let data = {
+    action: "create_product_data",
+    data: {
+      name,
+      title: name,
+      short_description: description,
+      description: longdescription,
+      type: product_data,
+      product_id,
+      price,
+      sale_price,
+      sold_individually,
+      regular_price: price,
+      sku: product_code,
+      manage_stock,
+      stock_quantity: stock_quantity ? parseInt(stock_quantity) : 0,
+      product_GTIN,
+      stock_status: product_status,
+      meta_data,
+      tag_item,
+      attributes,
+      category_item,
+      brand_item,
+      product_image,
+      product_images: await getProcessedImages(),
+    },
+  };
+  LoadingPage.open();
+  try {
+    let response = await AjaxData(data, "post");
+    if (response.success) {
+      LoadingPage.close();
+      Toast.success("Thêm sản phẩm thành công");
+      location.href = homeUrl + "/?arg=products&param=index";
+    } else {
+      LoadingPage.close();
+      Toast.error(response.data.message);
+    }
+  } catch (e) {
+    LoadingPage.close();
+    Toast.error(response.data.message);
+  }
+});
+
+/// update sản phẩm
+$(".button-capnhap").on("click", async function () {
+  let name = $("#name_product").val();
+  let longdescription = $("#longdescription").summernote("code");
+  let product_id = $("#product_id").val();
+  let product_data = $("#product_data").val();
+  let sale_price = $("#sale_price_product").val();
+  let price = $("#price_product").val();
+  let product_code = $("#product_code").val();
+  let manage_stock = $("#product_warehouse").is(":checked");
+  let stock_quantity = $("#product_stock").val();
+  let product_GTIN = $("#product_GTIN").val();
+  let product_status = $('input[name="product_status"]:checked').val();
+  let sold_individually = $("#sold_individually").is(":checked"); // check
+  let description = $("#description").summernote("code");
+
+  let product_image = $("#product_image").attr("src");
+  const images = await getProcessedImages();
+  const filteredOldImages = imageEdit.gallery.filter(
+    (i) => images.oldImages.includes(i) === false
+  );
+  if (product_image && product_image.startsWith("data:image")) {
+    const base64Image = product_image.split(",")[1];
+    compressBase64Image(base64Image)
+      .then((compressedImage) => {
+        product_image = `data:image/jpeg;base64,${compressedImage}`;
+      })
+      .catch((err) => console.error("Error compressing product_image:", err));
+    filteredOldImages.push(imageEdit.image);
+  } else {
+    product_image = null;
+  }
+  let meta_data = [];
+  let tag_item = get_data_checked($(".tag_item"));
+  let category_item = get_data_checked($(".category_item"));
+  let brand_item = get_data_checked($(".brand_item"));
+  let attributes = get_attributes();
+
+  let data = {
+    action: "update_product_data",
+    data: {
+      name,
+      title: name,
+      short_description: description,
+      description: longdescription,
+      type: product_data,
+      id: product_id,
+      price,
+      sale_price,
+      sold_individually,
+      regular_price: price,
+      sku: product_code,
+      manage_stock,
+      stock_quantity: stock_quantity ? parseInt(stock_quantity) : 0,
+      product_GTIN,
+      stock_status: product_status,
+      meta_data,
+      tag_item,
+      attributes,
+      category_item,
+      brand_item,
+      product_image,
+      product_images: images,
+      filteredOldImages,
+    },
+  };
+  LoadingPage.open();
+  let response = await AjaxData(data, "post");
+
+  if (response.success) {
+    LoadingPage.close();
+    Toast.success("Cập nhật sản phẩm thành công ");
+  } else {
+    LoadingPage.close();
+    Toast.error(response.data.message);
+  }
+});
+
+async function getProcessedImages() {
+  let newImagesPromises = [];
+  let oldImages = [];
+
+  $(".product_images").each(function () {
+    const src = $(this).attr("src");
+    if (src && src.startsWith("data:image")) {
+      const base64Image = src.split(",")[1];
+      newImagesPromises.push(
+        compressBase64Image(base64Image)
+          .then(
+            (compressedImage) => `data:image/jpeg;base64,${compressedImage}`
+          )
+          .catch((err) => {
+            console.error("Error compressing an image:", err);
+            return null;
+          })
+      );
+    } else {
+      oldImages.push(src || null);
+    }
+  });
+
+  const newImages = await Promise.all(newImagesPromises);
+  const processedNewImages = newImages.filter(Boolean);
+
+  return {
+    newImages: processedNewImages,
+    oldImages: oldImages.filter(Boolean),
+  };
+}
+
+function get_attributes() {
+  let attributes = [];
+  $(".item_attributesfinal").each((key, item) => {
+    if ($(item).css("display") === "block") {
+      let attribute = {
+        id: $(item).data("id"),
+        name: $(item).data("name"),
+        slug: $(item).data("slug"),
+        position: key,
+        visible: $(".visible" + $(item).data("id")).is(":checked"),
+        options: [],
+      };
+      $(item)
+        .find(".attribute_values option:selected")
+        .each(function () {
+          attribute.options.push($(this).val());
+        });
+      attributes.push(attribute);
+    }
+  });
+  return attributes;
+}
+
+function compressBase64Image(
+  base64Str,
+  maxSizeMB = 2,
+  maxWidth = 800,
+  quality = 0.7
+) {
+  return new Promise((resolve, reject) => {
+    const sizeInBytes = (base64Str.length * 3) / 4;
+    const sizeInMB = sizeInBytes / (1024 * 1024);
+    if (sizeInMB <= maxSizeMB) {
+      resolve(base64Str); // Không cần nén
+      return;
+    }
+    const img = new Image();
+    img.src = `data:image/jpeg;base64,${base64Str}`;
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      let width = img.width;
+      let height = img.height;
+      if (width > maxWidth) {
+        height *= maxWidth / width;
+        width = maxWidth;
+      }
+
+      canvas.width = width;
+      canvas.height = height;
+      ctx.drawImage(img, 0, 0, width, height);
+
+      // Tạo Base64 mới với chất lượng thấp hơn
+      const compressedBase64 = canvas
+        .toDataURL("image/jpeg", quality)
+        .split(",")[1]; // Chỉ lấy Base64
+      resolve(compressedBase64);
+    };
+
+    img.onerror = (err) => reject(err);
+  });
+}
+let originalOrder = []; // Lưu trữ trạng thái ban đầu
+
+function sortTags(order = "desc", name, count) {
+  const container = $("#" + name);
+  if (count === 0) {
+    originalOrder[name] = container.html();
+  }
+  const items = [];
+  container.find("label").each(function () {
+    const item = $(this);
+    items.push({
+      element: item,
+      count: parseInt(item.data("count"), 10),
+    });
+  });
+  items.sort((a, b) => {
+    return order === "asc" ? a.count - b.count : b.count - a.count;
+  });
+  container.empty();
+  for (const item of items) {
+    container.append(item.element);
+  }
+}
+let counttag = 0;
+$(".tagreset").click(function () {
+  const containerName = "tags";
+  if (originalOrder[containerName]) {
+    $("#" + containerName).html(originalOrder[containerName]);
+    counttag = 0;
+  }
+});
+$(".tagdesc").click(function () {
+  sortTags("desc", "tags", counttag);
+  counttag += 1;
+});
+
+let countcate = 0;
+$(".categorysreset").click(function () {
+  const containerName = "categorys";
+  if (originalOrder[containerName]) {
+    $("#" + containerName).html(originalOrder[containerName]);
+    countcate = 0;
+  }
+});
+$(".categorysdesc").click(function () {
+  sortTags("desc", "categorys", countcate);
+  countcate += 1;
+});
+
+let countbrand = 0;
+$(".brandreset").click(function () {
+  const containerName = "brands";
+  if (originalOrder[containerName]) {
+    $("#" + containerName).html(originalOrder[containerName]);
+    countbrand = 0;
+  }
+});
+$(".branddesc").click(function () {
+  sortTags("desc", "brands", countbrand);
+  countbrand += 1;
+});
+
+async function product_info(id) {
+  let data = {
+    action: "get_product_detail",
+    data: {
+      id: id,
+    },
+  };
+  let response = await AjaxData(data, "get");
+  if (response.success) {
+    response = response.data;
+    imageEdit.image = response.img_url;
+    imageEdit.gallery = response.gallery_images;
+    $("#product_id").val(response.id);
+    $(".timedata").text(response.date_created.replace("T", " "));
+    check(response.status);
+    $("#name_product").val(response.name);
+    $("#longdescription").summernote("code", response.description);
+    $("#description").summernote("code", response.short_description);
+    $("#product_stock").val(response.stock_quantity);
+    if (response.img_url) {
+      $("#product_image").attr("src", response.img_url);
+      $("#product_image").css("display", "block");
+    }
+    loadimag(response.gallery_images);
+    $("#product_data").val(response.type);
+    $("#sale_price_product").val(response.price);
+    $("#price_product").val(response.regular_price);
+    $("#product_code").val(response.sku);
+    $("#product_warehouse").prop("checked", response.manage_stock);
+    $(
+      "input[name='product_status'][value='" + response.stock_status + "']"
+    ).prop("checked", true);
+    product_stock(response.stock_status);
+    $("#sold_individually").prop("checked", response.sold_individually);
+    $.each(response.brands, function (key, item) {
+      $(".brand_item[value='" + item.id + "']").prop("checked", true);
+    });
+    $.each(response.categories, function (key, item) {
+      $(".category_item[value='" + item.id + "']").prop("checked", true);
+    });
+    $.each(response.tags, function (key, item) {
+      $(".tag_item[value='" + item.id + "']").prop("checked", true);
+    });
+    $.each(response.attributes, function (key, item) {
+      setitem(item.id, item.options);
+    });
+  }
+}
+
+function loadimag(data) {
+  let html = ``;
+  $.each(data, function (key, item) {
+    html += `<div class="delete${key} imageurl"><span class="spandelete" onclick="deleteimage(${key})">xóa</span> <img class="product_images" src="${item}"/></div>`;
+  });
+  $("#previews-container").html(html);
+}
+
+function deleteimage(data) {
+  $(".delete" + data).remove();
+}
+$(".eyeshow").on("click", function () {
+  let id = $("#product_id").val();
+  item_status(id, "private");
+  check("private");
+});
+$(".eyehiden").on("click", async function () {
+  let id = $("#product_id").val();
+  item_status(id, "publish");
+  check("publish");
+});
+async function item_status(id, status) {
+  let data = {
+    action: "update_product_status",
+    data: {
+      id: id,
+      status: status,
+    },
+  };
+  let response = await AjaxData(data, "post");
+}
+
+function check(status) {
+  if (status == "publish") {
+    $(".eyeshow").css("display", "block");
+    $(".eyehiden").css("display", "none");
+  } else {
+    $(".eyeshow").css("display", "none");
+    $(".eyehiden").css("display", "block");
+  }
+}
+
+function product_stock(check) {
+  if (check) {
+    $("#product_stock").css("display", "block");
+  } else {
+    $("#product_stock").css("display", "none");
+  }
+}
+
+$("#btn-selected-img").click(function () {
+  $("#image-upload").click();
+});
+
+$("#remove-image").click(function () {
+  const src_img = $("#product_image").data("src");
+  URL.revokeObjectURL(src_img);
+  $("#image-upload").val("");
+  $("#preview-container").hide();
+  $("#image-name").hide();
+  $("#product_image").hide();
+});
+
+$("#btn-selected-imgs").click(function () {
+  $("#image-uploads").click();
+});

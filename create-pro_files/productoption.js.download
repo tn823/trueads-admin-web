@@ -1,0 +1,289 @@
+let allAttrs = null;
+async function product_attributes() {
+  let data = {
+    action: "get_all_product_attributes",
+    data: {},
+  };
+  let response = await AjaxData(data, "get");
+  if (response.data) {
+    allAttrs = response.data;
+    loadhtmlattr(response.data);
+  }
+}
+
+function loadhtmlattr(response) {
+  $.each(response, function (key, item) {
+    let html = `<option value="${item.id}">${item.name}</option>`;
+    $("#select-thuoctinh").append(html);
+    loadhtmllistattr(item);
+  });
+}
+let checkclick = [];
+$(".checkclick").on("click", function () {
+  let id = $("#select-thuoctinh").val();
+  setitem(id);
+});
+
+function setitem(id, term = []) {
+  let view = $(".viewattr>.attrdata_" + id).html();
+  let html = $(".viewtest>.attrdata_" + id);
+  if (!view) {
+    let targetElement = $(".viewattr");
+    view =
+      `<div class="accordion-item-thuoctinh item_attributesfinal attrdata_${id} attrdelete${id}" data-id="${id}" data-slug="${html.attr(
+        "data-slug"
+      )}" data-name="${html.attr("data-name")}">` +
+      html.html() +
+      `</div>`;
+    targetElement.append(view);
+  } else {
+    $(".attrdata_" + id).show();
+  }
+  let index = checkclick.find((a) => a == id);
+  if (!index) {
+    $(".chosen-select" + id).addClass("chosen" + id);
+    if (term.length > 0) {
+      const getOptions = allAttrs.find((a) => a.id == id).terms;
+      const getTerm = getOptions.filter((a) => term.includes(a.name));
+      getTerm.forEach((item) => {
+        $(`.chosen${id} .option-attr-${item.id}`).attr("selected", true);
+      });
+    }
+    $(".chosen" + id).chosen();
+    $(".chosen-container").css("width", "100%");
+    checkclick.push(id);
+  }
+}
+
+function loadhtmllistattr(item) {
+  let html = ` <div class="accordion-item-thuoctinh item_attributes attrdata_${item.id}" data-id="${item.id}" data-slug="${item.slug}" data-name="${item.name}">
+                            <div class="accordion-title">
+                               ${item.name}
+                                <i class="fas fa-bars"></i>
+                                <button  class="btn-delete btn-attr_data" onclick="viewattrdata(${item.id})" data-id="${item.id}">Xoá</button>
+                            </div>
+                            <div class="accordion-content">
+                                <div class="attribute_data" style="display: block;">
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td class="attribute_name">
+                                                    <label>Tên:</label>
+                                                    <strong>  ${item.name}</strong></br>
+                                                    </br>
+                                                    <label><input type="checkbox" class="attribute_heckbox visible${item.id}" checked="checked"> Có thể nhìn thấy trên trang sản phẩm</label>
+                                                </td>
+                                                <td>
+                                                <label>Giá trị:</label>
+                                                <select placeholder="Chọn giá trị" multiple class="chosen-select${item.id} attribute_values attr_${item.slug}">
+                                                    
+                                                </select>
+                                                    <button class="plus add_new_attribute" data-bs-toggle="modal" onclick="add_new_attribute('${item.slug}','${item.name}')"   data-bs-target="#create_attr_term">Tạo giá trị</button>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>
+                                                    <div class="enable_variation show_if_variable"
+                                                        style="display: none;">
+                                                        <label><input type="checkbox"
+                                                                class="woocommerce_attribute_used_for_variations checkbox"
+                                                                name="attribute_variation[0]" value="1">
+                                                            Dùng cho nhiều biến thể</label>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                </div>`;
+  $(".viewtest").append(html);
+  addoption(item);
+  $(".chosen-container").css("width", "100%");
+}
+
+function viewattrdata(id) {
+  $(".attrdelete" + id).css("display", "none");
+}
+
+function addoption(data) {
+  let slug = data.slug;
+  if (data.terms) {
+    $.each(data.terms, (key, item) => {
+      let html = `<option class="option-attr-${item.id}" value="${item.name}" data-id="${item.id}">${item.name}</option>`;
+      $(".attr_" + slug).append(html);
+    });
+  }
+}
+
+$(".btn-create_attr").on("click", async function () {
+  let attribute_label = $(".attribute_label").val();
+  let attribute_name = $(".attribute_name_create").val();
+  if (attribute_name == "") {
+    attribute_name = attribute_label;
+  }
+  if (
+    checktestandalert(attribute_name, "tên thuộc tính") &&
+    checktestandalert(attribute_label, "loại thuộc tính")
+  ) {
+    let data = {
+      action: "create_product_attribute",
+      data: {
+        attribute_label: attribute_label,
+        attribute_name: attribute_name,
+      },
+    };
+    let response = await AjaxData(data, "post");
+    if (response.success) {
+      $(".from_create_attr").css("display", "none");
+      loadhtmllistattr(response.data);
+    }
+  }
+});
+$(".btn-delete_attr").on("click", function () {
+  $(".from_create_attr").css("display", "none");
+});
+$(".open_from_create").on("click", function () {
+  $(".from_create_attr").css("display", "block");
+});
+
+function add_new_attribute(attribute_slug, name) {
+  $("#create_attr_term_name").text(name);
+  $(".id_term_create").val(attribute_slug);
+}
+$(".add_attr_term").on("click", async function () {
+  let attribute_slug = $(".id_term_create").val();
+  let name_term_create = $(".name_term_create").val();
+  if (
+    checktestandalert(attribute_slug, "") &&
+    checktestandalert(name_term_create, "tên loại thuộc tính")
+  ) {
+    let data = {
+      action: "create_attribute_term",
+      data: {
+        term_name: name_term_create,
+        term_slug: name_term_create,
+        attribute_slug: attribute_slug,
+      },
+    };
+    let response = await AjaxData(data, "post");
+    if (response.success) {
+      let item = {
+        slug: attribute_slug,
+        terms: {
+          id: response.data.term_id,
+          name: response.data.name,
+          slug: response.data.slug,
+        },
+      };
+      const getA = allAttrs.find((a) => a.slug == attribute_slug);
+      let html = `<option class="option-attr-${item.terms.id}" value="${item.terms.name}" data-id="${item.terms.id}">${item.terms.name}</option>`;
+      $(".attr_" + attribute_slug).append(html);
+      $(`.chosen${getA.id} .option-attr-${item.terms.id}`).attr(
+        "selected",
+        true
+      );
+      $(".chosen" + getA.id).chosen("destroy");
+      $(".chosen" + getA.id).chosen();
+      $("#create_attr_term").modal("hide");
+    } else {
+      Toast.warning(response.data.message);
+    }
+  }
+});
+// cate
+async function getSelectCategories() {
+  let data = {
+    action: "get_all_categories",
+    data: {},
+  };
+  let response = await AjaxData(data, "get");
+  if (response.data) {
+    loadhtmcate(response.data);
+  }
+}
+
+function loadhtmcate(response) {
+  $.each(response, function (key, item) {
+    let text = item.parent ? item.parent.name : "";
+    let html = `<label data-count="${item.count}"  title="${
+      text ? "thuộc:" + text : ""
+    }" ><input type="checkbox" class="category_item"  value="${item.id}" >${
+      text ? "--" : ""
+    } ${item.name ? item.name : "No Name"} </label>`;
+    $("#categorys").append(html);
+    $("#categorys").show();
+  });
+}
+
+// brand
+async function getSelectbrands() {
+  let data = {
+    action: "get_brands",
+    data: {},
+  };
+  let response = await AjaxData(data, "get");
+  if (response.data) {
+    loadhtmbrand(response.data);
+  }
+}
+
+function loadhtmbrand(response) {
+  $.each(response, function (key, item) {
+    let text = item.parent ? item.parent.name : "";
+    let html = `<label data-count="${item.count}" title="${
+      text ? "thuộc:" + text : ""
+    }" ><input type="checkbox" class="brand_item"  value="${item.id}" >${
+      text ? "--" : ""
+    } ${item.name ? item.name : "No Name"} </label>`;
+    $("#brands").append(html);
+  });
+}
+
+///tag
+
+async function getSelecttags() {
+  let data = {
+    action: "get_tags_all",
+    data: {},
+  };
+  let response = await AjaxData(data, "get");
+  if (response.data) {
+    loadhtmltag(response.data);
+  }
+}
+
+function loadhtmltag(response) {
+  $.each(response, function (key, item) {
+    let text = item.parent ? item.parent.name : "";
+    let html = `<label data-count="${item.count}"  title="${
+      text ? "thuộc:" + text : ""
+    }" ><input type="checkbox" class="tag_item" value="${item.id}" >${
+      text ? "--" : ""
+    } ${item.name ? item.name : "No Name"} </label>`;
+    $("#tags").append(html);
+    $("#tags").show();
+  });
+}
+
+async function addTags() {
+  let name = $(".tagsname").val();
+  if (checktestandalert(name, "tag sản phẩm")) {
+    let data = {
+      action: "create_tag",
+      data: {
+        name: name,
+        slug: name,
+      },
+    };
+    let response = await AjaxData(data, "post");
+    if (response.data) {
+      $(".tagsname").val("");
+      $("#tags").html("");
+      getSelecttags();
+    } else {
+      Toast.warning("không thể thêm tag trên");
+    }
+  }
+}

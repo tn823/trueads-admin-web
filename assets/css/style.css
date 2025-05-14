@@ -74,7 +74,7 @@
  }
 
 
- /* trang tổng quan */
+
 .wrapped .sidebar_main .icon-box>a {
     width: 100%;
     height: 100%;
@@ -115,13 +115,13 @@
     padding: 0 2px 0 0 ;
     overflow-y: auto;
 }
-.content::-webkit-scrollbar,
-.content .content.in::-webkit-scrollbar {
+*::-webkit-scrollbar,
+* .content.in::-webkit-scrollbar {
     -webkit-appearance: none;
     width: 6px;
 }
-.content::-webkit-scrollbar-thumb,
-.content .content.in::-webkit-scrollbar-thumb {
+*::-webkit-scrollbar-thumb,
+*::-webkit-scrollbar-thumb {
     background-color: rgb(179, 179, 179);
     border-radius: 4px;
 }
@@ -362,15 +362,6 @@
     font-size: 14px;
     margin: 0;
 }
-.options-item.home {
-    background-color: var(--primary-color);
-}
-.options-item.home p {
-    color: #fff;
-}
-.options-item.home i {
-    color: #fff
-}
 .options-item i {
     color: #83868c;
     width: 20px;
@@ -389,16 +380,6 @@
 }
 .options-item:hover i {
     color: var(--color-text);
-}
-.options-item.home:hover {
-    background-color: var(--primary-color);
-}
-.options-item.home:hover p {
-    color: #fff;
-    font-weight: 700;
-}
-.options-item.home:hover i {
-    color: #fff;
 }
 .options-item.logout p,
 .options-item.logout i {
@@ -755,8 +736,299 @@ table.dataTable thead>tr>td.dt-ordering-desc span.dt-column-order {
 .content .payment_container .payment-method>div:last-child {
     margin-right: 0;
 }
-
-
-
-
-/* end trang tổng quan */
+.text-headl p {
+    text-align: justify;
+}
+#name_product:focus {
+    border-color: #2271b1;
+    box-shadow: 0 0 0 1px #2271b1;
+}
+.detailproduct-name input#name_product {
+    padding: 16px;
+    margin: 0;
+}
+.col-12.dautrang-suasanpham a.btn-hv {
+    margin: 0;
+}
+.col-9.chinhsuasanpham .mota-sanpham,
+.col-9.chinhsuasanpham .dulieu-sanpham {
+    margin-top: 16px;
+    padding: 16px;
+}
+.col-9.chinhsuasanpham .mota-sanpham p{
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+}
+.col-9.chinhsuasanpham .chon-du-lieu-sp p {
+    padding: 0;
+}
+.chi-tiet-san-pham .chon-du-lieu-sp select {
+    margin: 0;
+}
+.col-9.chinhsuasanpham .dulieu-sanpham .chon-du-lieu-sp {
+    padding-bottom: 16px;
+    display: flex;
+    align-items: center;
+}
+.col-9.chinhsuasanpham .dulieu-sanpham .tab-content-container {
+    padding-top: 16px;
+}
+.content.create-pro {
+    padding: 25px;
+}
+.content.create-pro .row.container.chi-tiet-san-pham {
+    margin-top: 0 !important;
+}
+.chi-tiet-san-pham .col-9.chinhsuasanpham {
+    width: 75% !important;
+    padding: 0;
+    flex: 1;
+}
+.chi-tiet-san-pham .col-3.chinhsuasanpham {
+    width: 25% !important;
+    padding: 0;
+}
+.edit-pro-box {
+    display: flex;
+    gap: 20px;
+    padding: 0  !important;
+}
+.col-3.sidebarsanpham .anhsanpham {
+    margin-top: 0;
+    padding: 0;
+}
+.col-3.sidebarsanpham .anhsanpham  .publish-panel,
+.col-3.sidebarsanpham .albumanh-sanpham .publish-panel,
+.col-3.sidebarsanpham .thesanpham .publish-panel  {
+    padding: 14px 16px;
+    border-bottom: 1px solid #c3c4c7;
+}
+.col-3.sidebarsanpham .anhsanpham .anhdaidien-sanpham,
+.col-3.sidebarsanpham .albumanh-sanpham .albumanh-sanpham {
+    padding: 16px;
+}
+.col-3.sidebarsanpham .anhsanpham .anhdaidien-sanpham p,
+.col-3.sidebarsanpham .albumanh-sanpham .albumanh-sanpham p {
+    margin: 0;
+}
+.col-3.sidebarsanpham .albumanh-sanpham {
+    padding: 0;
+    margin-top: 16px;
+}
+.sidebarsanpham .thesanpham {
+    margin-top: 16px;
+    padding: 0;
+}
+.albumanh-sanpham-in {
+    padding: 16px;
+}
+.albumanh-sanpham-in p {
+    margin: 0;
+}
+.col-3.sidebarsanpham .thesanpham .input-thesanpham{
+    padding: 16px;
+    display: flex;
+}
+.col-3.sidebarsanpham .thesanpham .input-thesanpham input.tagsname {
+    flex: 1;
+}
+.col-3.sidebarsanpham .thesanpham .input-thesanpham button {
+    border-radius: 4px;
+}
+.col-3.sidebarsanpham .thesanpham .tabs {
+    padding: 0 16px;
+}
+.col-3.sidebarsanpham .thesanpham .tabs .active-tab {
+    opacity: 1;
+    border: 1px solid #c3c4c7;
+    border-bottom: 0;
+}
+.col-3.sidebarsanpham .thesanpham .tab-content-danhmuc {
+    margin: 0 16px 16px;
+}
+.col-3.sidebarsanpham .thesanpham .tab-content-danhmuc label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.col-3.sidebarsanpham .danhmuc-sanpham {
+    padding: 0;
+}
+.col-3.sidebarsanpham .danhmuc-sanpham .publish-panel {
+    padding: 14px 16px;
+    border-bottom: 1px solid #c3c4c7;
+}
+.col-3.sidebarsanpham .danhmuc-sanpham .tabs {
+    padding: 16px;
+    padding-bottom: 0;
+}
+.col-3.sidebarsanpham .danhmuc-sanpham .tab-content-danhmuc {
+    margin: 16px;
+    margin-top: 0;
+}
+.col-3.sidebarsanpham .brand-sanpham {
+    margin-top: 16px;
+    padding: 0;
+    padding-bottom: 16px;
+}
+.col-3.sidebarsanpham .brand-sanpham .publish-panel {
+    padding: 14px 16px;
+    border-bottom: 1px solid #c3c4c7;
+}
+.col-3.sidebarsanpham .brand-sanpham .tabs {
+    padding: 16px;
+    padding-bottom: 0;
+    
+}
+.col-3.sidebarsanpham .brand-sanpham .tab-content-brand {
+    margin: 0 16px 0;
+}
+.col-9.chinhsuasanpham #attributes .chon-thuoctinh {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.col-9.chinhsuasanpham #attributes .chon-thuoctinh .expand-close {
+    flex: 1;
+    text-align: right;
+}
+ .chi-tiet-san-pham .accordion-title {
+    font-size: 16px !important;
+    color: #000 !important;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+.attribute_data td {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    flex: 1;
+    padding: 0;
+}
+.attribute_data tr {
+    display: flex;
+    padding: 0;
+    gap: 16px;
+}
+.accordion-thuoctinh .mg {
+    margin: 0;
+}
+.accordion-thuoctinh .btn-delete.btn-attr_data {
+    border: 0;
+    background: 0;
+    text-decoration: underline;
+    font-size: 16px;
+}
+.col-9.chinhsuasanpham #attributes .chon-thuoctinh {
+    padding-bottom: 16px;
+    border-bottom: 1px solid #eee;
+}
+.chi-tiet-san-pham .accordion-content {
+    padding-top: 16px;
+    border-top: 1px solid #eee;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 16px;
+}
+.chi-tiet-san-pham #attributes div.accordion-content button {
+    width: fit-content;
+}
+.chosen-container-multi .chosen-choices li.search-field {
+    border: 0
+}
+.modal-dialog .btn.btn-primary.add_attr_term {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+.accordion-item-thuoctinh.from_create_attr a.btn-delete_attr {
+    color: #b32d2e;
+    text-decoration: none;
+}
+.accordion-item-thuoctinh.from_create_attr a {
+    text-decoration: none;
+    position: relative;
+}
+.accordion-item-thuoctinh.from_create_attr a.btn-create_attr {
+    padding-left: 4px;
+}
+.accordion-item-thuoctinh.from_create_attr a.btn-create_attr:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 1px;
+    background-color: #000;
+    height: 100%;
+}
+.accordion-item-thuoctinh.from_create_attr input.attribute_label,
+.accordion-item-thuoctinh.from_create_attr input.attribute_name_create {
+    margin: 5px 0;
+}
+.wrapped .services_area {
+    padding: 0;
+}
+.service-hedaer{
+    padding: 12px 20px;
+    border-bottom: 1px solid #E3E6E7;
+}
+.service-body {
+    padding: 0 16px;
+    overflow: auto;
+    height: 93vh;
+}
+.services_area .groupmenu_title {
+    font-weight: 700;
+}
+.wrapped .services_area .groupmenu_title {
+    border: 0;
+    margin: 0;
+    padding: 16px 0;
+}
+.header .ser_menu:hover {
+    cursor: pointer;
+}
+.services_area .icon-box:hover .icon img,
+.services_area .icon-box:hover .icon svg {
+    transform: scale(1.2);
+}
+.services_area .pos svg {
+    fill: #FE6611;
+}
+.services_area .icon-box.pos:hover b {
+    color: #FE6611;
+}
+.services_area .chat svg {
+    fill: #FEC110;
+}
+.services_area .icon-box.chat:hover b {
+    color: #FEC110;
+}
+.services_area .icon-box.chat .icon {
+    background: #fdf9ee;
+}
+.services_area .web svg {
+    fill: #10AC40;
+}
+.services_area .icon-box.web:hover b {
+    color: #10AC40;
+}
+.services_area .icon-box.web .icon {
+    background: #f3fdee;
+}
+.services_area .icon-box.erp .icon {
+    background: #fff4f4;
+}
+.services_area .icon-box.erp:hover b {
+    color: #E13839;
+}
+.services_area .icon-box.report .icon {
+    background: #eeeefb;
+}
+.services_area .icon-box.report:hover b {
+    color: #0A72FF;
+}
+.services_area .icon-box.setting .icon {
+    background: #eeeefb;
+}
+.services_area .icon-box.gift .icon {
+    background: #f9f6e9;
+}
