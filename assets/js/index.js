@@ -33,3 +33,37 @@ tabs.forEach(tab => {
 });
 });
 
+//open - close sidebar
+document.addEventListener('DOMContentLoaded', function () {
+    const header = document.querySelector('.header');
+    const menu = document.querySelector('.sidebar_main .menu');
+    const closeBtn = document.querySelector('.secvice-close');
+    const sidebar = document.querySelector('.sidebar_main');
+    const servicesArea = document.querySelector('.services_area.open');
+
+    const headerOffset = header ? header.offsetTop : 0;
+    const menuOffset = menu ? menu.offsetTop : 0;
+
+    // Sticky header
+    window.addEventListener('scroll', function () {
+        if (header) {
+            if (window.scrollY > headerOffset) {
+                header.classList.add('fixed-header');
+            } else {
+                header.classList.remove('fixed-header');
+            }
+        }
+    });
+
+    // Hàm đóng sidebar và services area
+    function closeSidebarAndServices() {
+        if (sidebar) sidebar.classList.remove('active'); 
+        const openServices = document.querySelector('.services_area.open');
+        if (openServices) openServices.classList.remove('open');
+    }
+
+    // Gắn sự kiện click cho nút close
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeSidebarAndServices);
+    }
+});
