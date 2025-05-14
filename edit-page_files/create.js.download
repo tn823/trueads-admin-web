@@ -1,0 +1,725 @@
+let postId = 0;
+let isEditMode = false;
+$("#btn-selected-img").on('click', function() {
+    console.log('click');
+    $("#Media_modal").modal('show');
+});
+
+$(document).ready(function() {
+    init();
+});
+
+function init() {
+    postId = $('#post-id').val();
+    isEditMode = postId > 0;
+    loadParentPages();
+    if (isEditMode) {
+        loadPostData(postId);
+    } else {
+        $('#post-status').val('draft');
+    }
+    bindEvents();
+}
+
+// Bind all events
+function bindEvents() {
+    $('#post-title').on('blur', function() {
+        var title = $(this).val();
+        var slug = $('#post-slug').val();
+
+        if (title && !slug) {
+            generateSlug(title);
+        }
+    });
+
+    // Form submission
+    $('#post-form').on('submit', function(e) {
+        e.preventDefault();
+        savePost();
+    });
+
+    // Set featured image
+    $('#set-featured-image-btn').on('click', async function() {
+        let data = {
+            action: 'upload_post_image',
+            data: {
+                id: postId,
+                url: $("#featured-image-preview").attr('src'),
+            }
+        }
+        let response = await AjaxData(data, 'post');
+        console.log(response);
+        if (response.success) {
+            setFeaturedImage(response.data.url, response.data.id);
+        }
+    });
+
+    // Remove featured image
+    $('#remove-featured-image-btn').on('click', function() {
+        removeFeaturedImage();
+    });
+
+    // Refresh categories
+    $('#refresh-categories-btn').on('click', function() {
+        $(this).html('<i class="fa fa-sync fa-spin"></i> Đang tải...').prop('disabled', true);
+        loadCategories().then(() => {
+            $(this).html('<i class="fa fa-sync"></i> Làm mới danh mục').prop('disabled', false);
+        });
+    });
+
+    // Initialize popular tags
+    loadPopularTags();
+
+    // Sync tags from input to Select2 when user changes the input field
+    $('#post-tags').on('change keyup', function() {
+        syncTagsToSelect2();
+    });
+
+    // Toggle Add Category Form
+    $('#add-category-btn').on('click', function() {
+        // First, load parent categories for dropdown
+        loadParentCategories();
+        // Show the form
+        $('#add-category-form').slideDown();
+    });
+
+    // Cancel Add Category
+    $('#cancel-category-btn').on('click', function() {
+        resetCategoryForm();
+    });
+
+    // Save New Category
+    $('#save-category-btn').on('click', function() {
+        saveNewCategory();
+    });
+
+    // Toggle Add Tag Form
+    $('#add-tag-btn').on('click', function() {
+        $('#add-tag-form').slideDown();
+    });
+
+    // Cancel Add Tag
+    $('#cancel-tag-btn').on('click', function() {
+        resetTagForm();
+    });
+
+    // Save New Tag
+    $('#save-tag-btn').on('click', function() {
+        saveNewTag();
+    });
+}
+// Function to load post data
+async function loadPostData(postId) {
+    let response = await AjaxData({
+        action: 'get_website_post',
+        data: {
+            id: postId,
+            post_type: 'page'
+        }
+    }, 'get');
+    if (response.success && response.data.post) {
+        var post = response.data.post;
+
+        $('#post-title').val(post.title);
+        $('#post-slug').val(post.slug);
+        $('#post-status').val(post.status);
+        $('#post-excerpt').val(post.excerpt);
+        if ($('#post-content').length) {
+            if ($('.summernote').summernote) {
+                $('.summernote').summernote('code', post.content);
+            } else {
+                $('#post-content').val(post.content);
+            }
+        }
+        $("#post_media").html(post.media);
+        if (post.thumbnail) {
+            setFeaturedImage(post.thumbnail, post.thumbnail_id);
+        }
+        // Set SEO fields
+        $('#seo-title').val(post.seo_title);
+        $('#seo-description').val(post.seo_description);
+        $('#seo-keywords').val(post.seo_keywords);
+        $('#pageStatus').val(post.status);
+        $('#pageTemplate').val(post.template);
+        $('#pageParent').val(post.parent_id);
+        $('#pageOrder').val(post.menu_order);
+    } else {
+        boxupview('Không thể tải thông tin bài viết.', false);
+    }
+}
+async function loadParentPages() {
+    const currentId = $('#post-id').val();
+
+    let response = await AjaxData({
+        action: 'get_website_pages',
+        status: '' // Get all pages regardless of status
+    }, 'GET');
+
+    if (response.success && response.data.pages) {
+        let parentPages = response.data.pages;
+
+        // Remove current page from the list to prevent self-reference
+        if (currentId > 0) {
+            parentPages = parentPages.filter(page => page.id != currentId);
+        }
+
+
+        let options = '<option value="0">Không có</option>';
+        parentPages.forEach(page => {
+            options += `<option value="${page.id}">${page.title}</option>`;
+        });
+
+        // Update dropdown
+        $('#pageParent').html(options);
+    }
+}
+// Function to load categories
+async function loadCategories() {
+    $('#categories-container').html(`
+        <div class="text-center py-3">
+            <div class="spinner-border spinner-border-sm text-secondary" role="status">
+                <span class="sr-only">Đang tải...</span>
+            </div>
+            <span class="ml-2">Đang tải danh mục...</span>
+        </div>
+    `);
+
+    let response = await AjaxData({
+        action: 'get_website_categories'
+    }, 'get');
+
+    if (response.success && response.data.categories) {
+        renderCategories(response.data.categories);
+    } else {
+        $('#categories-container').html('<p class="text-center text-muted">Không có danh mục nào.</p>');
+    }
+}
+
+// Function to render categories
+function renderCategories(categories) {
+    if (!categories || categories.length === 0) {
+        $('#categories-container').html('<p class="text-center text-muted">Không có danh mục nào.</p>');
+        return;
+    }
+
+    var html = '<div class="categories-list" style="max-height: 250px; overflow-y: auto;">';
+
+    // Build category tree
+    var categoriesMap = {};
+    var rootCategories = [];
+
+    // First pass: map categories by ID
+    categories.forEach(function(category) {
+        categoriesMap[category.id] = category;
+        category.children = [];
+    });
+
+    // Second pass: build tree structure
+    categories.forEach(function(category) {
+        if (category.parent === 0) {
+            rootCategories.push(category);
+        } else if (categoriesMap[category.parent]) {
+            categoriesMap[category.parent].children.push(category);
+        }
+    });
+
+    // Render category checkboxes
+    function renderCategoryItem(category, level) {
+        var indent = '';
+        for (var i = 0; i < level; i++) {
+            indent += '&nbsp;&nbsp;&nbsp;&nbsp;';
+        }
+
+        var checked = '';
+        if (window.postCategories && Array.isArray(window.postCategories)) {
+            window.postCategories.forEach(function(cat) {
+                if (parseInt(cat.id) === parseInt(category.id)) {
+                    checked = 'checked';
+                    return false;
+                }
+            });
+        }
+
+        html += '<div class="custom-control custom-checkbox">';
+        html += '<input type="checkbox" class="custom-control-input" id="category-' + category.id + '" name="categories[]" value="' + category.id + '" ' + checked + '>';
+        html += '<label class="custom-control-label" for="category-' + category.id + '">' + indent + category.name + ' (' + category.count + ')</label>';
+        html += '</div>';
+
+        if (category.children && category.children.length > 0) {
+            category.children.forEach(function(child) {
+                renderCategoryItem(child, level + 1);
+            });
+        }
+    }
+
+    // Render root categories and their children
+    rootCategories.forEach(function(category) {
+        renderCategoryItem(category, 0);
+    });
+
+    html += '</div>';
+
+    $('#categories-container').html(html);
+}
+
+// Function to load popular tags
+async function loadPopularTags() {
+    try {
+        let response = await AjaxData({
+            action: 'get_website_tags'
+        }, 'get');
+
+        if (response.success && response.data.tags && response.data.tags.length > 0) {
+            // Sort tags by count (most used first)
+            var tags = response.data.tags.sort(function(a, b) {
+                return b.count - a.count;
+            });
+
+            // Initialize Select2 dropdown with all tags
+            initializeTagSelector(tags);
+
+            // Get top 15 tags for the popular tags section
+            var topTags = tags.slice(0, 15);
+
+            // Create HTML for popular tags
+            var tagsHtml = '';
+            topTags.forEach(function(tag) {
+                tagsHtml += '<a href="javascript:void(0)" class="badge badge-secondary mr-1 mb-1 popular-tag" data-tag="' + tag.name + '">' +
+                    tag.name + ' (' + tag.count + ')</a>';
+            });
+
+            // Update UI
+            $('.popular-tags-list').html(tagsHtml);
+            $('#popular-tags').removeClass('d-none');
+
+            // Add click handlers
+            $('.popular-tag').on('click', function() {
+                addTag($(this).data('tag'));
+            });
+        }
+    } catch (error) {
+
+        boxupview('Lỗi khi tải thẻ phổ biến.', false);
+    }
+}
+
+// Function to initialize the Select2 tag selector
+function initializeTagSelector(tags) {
+    // Check if Select2 is available
+    if (!$.fn.select2) {
+        console.log('Select2 is not loaded');
+        return;
+    }
+
+    // Format tags for Select2
+    var select2Tags = tags.map(function(tag) {
+        return {
+            id: tag.id,
+            text: tag.name + (tag.count > 0 ? ' (' + tag.count + ')' : '')
+        };
+    });
+
+    // Initialize Select2
+    $('#tag-selector').select2({
+        placeholder: 'Chọn thẻ...',
+        data: select2Tags,
+        tags: false,
+        width: '100%'
+    }).on('change', function() {
+        // When Select2 selection changes, update the tag input field
+        syncTagsFromSelect2();
+    });
+
+    // If editing a post and it has tags, select them in the dropdown
+    if (window.postTagIds && window.postTagIds.length > 0) {
+        $('#tag-selector').val(window.postTagIds).trigger('change');
+    }
+}
+
+// Function to add a tag
+function addTag(tagName) {
+    if (!tagName) return;
+
+    var currentTags = $('#post-tags').val();
+    tagName = tagName.trim();
+
+    if (currentTags) {
+        // Check if the tag is already in the list
+        var tagsArray = currentTags.split(',').map(function(tag) {
+            return tag.trim();
+        });
+
+        if (!tagsArray.includes(tagName)) {
+            $('#post-tags').val(currentTags + ', ' + tagName);
+        }
+    } else {
+        $('#post-tags').val(tagName);
+    }
+    updateTagSelector(tagName);
+}
+
+// Function to update Select2 tag selector when adding a tag via the popular tags
+function updateTagSelector(tagName) {
+    var select2Data = $('#tag-selector').select2('data');
+    var tagExists = false;
+    var tagId = null;
+    for (var i = 0; i < select2Data.length; i++) {
+        var text = select2Data[i].text;
+        var name = text.includes('(') ? text.substring(0, text.lastIndexOf('(')).trim() : text;
+
+        if (name.toLowerCase() === tagName.toLowerCase()) {
+            tagExists = true;
+            tagId = select2Data[i].id;
+            break;
+        }
+    }
+
+    if (tagExists && tagId) {
+        var selectedValues = $('#tag-selector').val() || [];
+        if (!selectedValues.includes(tagId)) {
+            selectedValues.push(tagId);
+            $('#tag-selector').val(selectedValues).trigger('change');
+        }
+    }
+}
+
+function syncTagsFromSelect2() {
+    var selectedTags = $('#tag-selector').select2('data');
+    var tagNames = [];
+
+    if (selectedTags && selectedTags.length > 0) {
+        selectedTags.forEach(function(tag) {
+            var text = tag.text;
+            var name = text.includes('(') ? text.substring(0, text.lastIndexOf('(')).trim() : text;
+            tagNames.push(name);
+        });
+    }
+    $('#post-tags').val(tagNames.join(', '));
+}
+
+// Function to sync tags from input field to Select2
+function syncTagsToSelect2() {
+    var currentTags = $('#post-tags').val();
+
+    if (currentTags) {
+        var tagsArray = currentTags.split(',').map(function(tag) {
+            return tag.trim();
+        });
+        var select2Data = $('#tag-selector').select2('data');
+        var tagMap = {};
+
+        select2Data.forEach(function(tag) {
+            var text = tag.text;
+            var name = text.includes('(') ? text.substring(0, text.lastIndexOf('(')).trim() : text;
+            tagMap[name.toLowerCase()] = tag.id;
+        });
+
+        // Find matching tag IDs
+        var tagIds = [];
+        tagsArray.forEach(function(tagName) {
+            if (tagMap[tagName.toLowerCase()]) {
+                tagIds.push(tagMap[tagName.toLowerCase()]);
+            }
+        });
+        if (tagIds.length > 0) {
+            $('#tag-selector').val(tagIds).trigger('change', { programmatic: true });
+        }
+    }
+}
+$('#save-post-btn').on('click', async function() {
+    await savePost();
+});
+async function savePost() {
+    var data = {
+        id: $('#post-id').val(),
+        title: $('#post-title').val(),
+        slug: $('#post-slug').val(),
+        status: $('#post-status').val(),
+        template: $('#post-template').val(),
+        parent_id: $('#post-parent').val(),
+        menu_order: $('#post-order').val(),
+        thumbnail: $('#featured-image-preview').attr('src'),
+        seo_title: $('#seo-title').val(),
+        seo_description: $('#seo-description').val(),
+        seo_keywords: $('#seo-keywords').val(),
+
+    };
+    if ($('.summernote').length && $('.summernote').summernote) {
+        data.content = $('.summernote').summernote('code');
+    } else {
+        data.content = $('#post-content').val();
+    }
+    if (!data.title) {
+        boxupview('Vui lòng nhập tiêu đề bài viết.', false);
+        $('#post-title').focus();
+        return;
+    }
+    try {
+        let response = await AjaxData({
+            action: 'save_website_page',
+            data: data
+        }, 'post');
+        if (response.success) {
+            boxupview(response.data.message);
+
+        } else {
+            boxupview(response.data.message || 'Lưu bài viết thất bại.', false);
+
+        }
+    } catch (error) {
+        boxupview('Đã xảy ra lỗi khi lưu bài viết.', false);
+    }
+}
+
+function generateSlug(title) {
+    var slug = title.toLowerCase()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-');
+
+    $('#post-slug').val(slug);
+}
+
+// Function to open media uploader
+function openMediaUploader() {
+    var mediaUploader;
+
+    if (mediaUploader) {
+        mediaUploader.open();
+        return;
+    }
+
+    mediaUploader = wp.media({
+        title: 'Chọn ảnh đại diện',
+        button: {
+            text: 'Đặt ảnh đại diện'
+        },
+        multiple: false
+    });
+
+    mediaUploader.on('select', function() {
+        var attachment = mediaUploader.state().get('selection').first().toJSON();
+        setFeaturedImage(attachment.url, attachment.id);
+    });
+
+    mediaUploader.open();
+}
+
+// Function to set featured image
+function setFeaturedImage(url, id) {
+    $('#featured-image-preview').attr('src', url).removeClass('d-none');
+    $('#no-featured-image').addClass('d-none');
+    $('#thumbnail-id').val(id);
+    $('#remove-featured-image-btn').removeClass('d-none');
+}
+
+// Function to remove featured image
+function removeFeaturedImage() {
+    $('#featured-image-preview').attr('src', '').addClass('d-none');
+    $('#no-featured-image').removeClass('d-none');
+    $('#thumbnail-id').val('0');
+    $('#remove-featured-image-btn').addClass('d-none');
+}
+
+// Function to show alert
+function showAlert(type, message) {
+    var alertHtml = '<div class="alert alert-' + type + ' alert-dismissible fade show" role="alert">';
+    alertHtml += message;
+    alertHtml += '<button type="button" class="close" data-dismiss="alert" aria-label="Close">';
+    alertHtml += '<span aria-hidden="true">&times;</span>';
+    alertHtml += '</button>';
+    alertHtml += '</div>';
+
+    // Remove existing alerts
+    $('.dashboard-section .alert').alert('close');
+
+    // Add new alert
+    $('.dashboard-section').prepend(alertHtml);
+
+    // Auto dismiss after 5 seconds
+    setTimeout(function() {
+        $('.alert').alert('close');
+    }, 5000);
+}
+
+// Function to load parent categories for dropdown
+async function loadParentCategories() {
+    $('#new-category-parent').html('<option value="0">-- Đang tải... --</option>');
+
+    try {
+        let response = await AjaxData({
+            action: 'get_website_categories'
+        }, 'get');
+
+        if (response.success && response.data.categories) {
+            let categories = response.data.categories;
+            let html = '<option value="0">-- Danh mục gốc --</option>';
+
+            // Process to create a hierarchical dropdown
+            let parentCategories = categories.filter(cat => cat.parent === 0);
+
+            parentCategories.forEach(function(category) {
+                html += `<option value="${category.id}">${category.name}</option>`;
+
+                // Find children
+                let children = categories.filter(cat => cat.parent === category.id);
+                children.forEach(function(child) {
+                    html += `<option value="${child.id}">— ${child.name}</option>`;
+                });
+            });
+
+            $('#new-category-parent').html(html);
+        }
+    } catch (error) {
+
+        boxupview('Lỗi khi tải danh mục.', false);
+        $('#new-category-parent').html('<option value="0">-- Lỗi khi tải danh mục --</option>');
+    }
+}
+
+// Function to save a new category
+async function saveNewCategory() {
+    let name = $('#new-category-name').val().trim();
+    let parent = $('#new-category-parent').val();
+    let description = $('#new-category-description').val().trim();
+
+    if (!name) {
+        showAlert('danger', 'Vui lòng nhập tên danh mục.');
+        $('#new-category-name').focus();
+        return;
+    }
+
+    // Disable buttons and show loading
+    $('#save-category-btn').html('<i class="fa fa-spinner fa-spin"></i> Đang lưu...').prop('disabled', true);
+    $('#cancel-category-btn').prop('disabled', true);
+
+    try {
+        let response = await AjaxData({
+            action: 'create_website_category',
+            data: {
+                name: name,
+                parent: parent,
+                description: description
+            }
+        }, 'post');
+
+        if (response.success && response.data.category) {
+            boxupview('Đã tạo danh mục mới thành công.');
+            resetCategoryForm();
+            await loadCategories();
+            setTimeout(function() {
+                $(`#category-${response.data.category.id}`).prop('checked', true);
+            }, 500);
+        } else {
+            boxupview(response.data.message || 'Tạo danh mục thất bại.', false);
+            $('#save-category-btn').html('<i class="fa fa-save"></i> Lưu danh mục').prop('disabled', false);
+            $('#cancel-category-btn').prop('disabled', false);
+        }
+    } catch (error) {
+        boxupview('Đã xảy ra lỗi khi tạo danh mục.', false);
+        $('#save-category-btn').html('<i class="fa fa-save"></i> Lưu danh mục').prop('disabled', false);
+        $('#cancel-category-btn').prop('disabled', false);
+    }
+}
+
+// Function to reset category form
+function resetCategoryForm() {
+    $('#new-category-name').val('');
+    $('#new-category-parent').val('0');
+    $('#new-category-description').val('');
+    $('#add-category-form').slideUp();
+}
+
+// Function to save a new tag
+async function saveNewTag() {
+    let name = $('#new-tag-name').val().trim();
+    let description = $('#new-tag-description').val().trim();
+
+    if (!name) {
+        showAlert('danger', 'Vui lòng nhập tên thẻ.');
+        $('#new-tag-name').focus();
+        return;
+    }
+
+    // Disable buttons and show loading
+    $('#save-tag-btn').html('<i class="fa fa-spinner fa-spin"></i> Đang lưu...').prop('disabled', true);
+    $('#cancel-tag-btn').prop('disabled', true);
+
+    try {
+        let response = await AjaxData({
+            action: 'create_website_tag',
+            data: {
+                name: name,
+                description: description
+            }
+        }, 'post');
+
+        if (response.success && response.data.tag) {
+            boxupview('Đã tạo thẻ mới thành công.');
+            resetTagForm();
+            addTag(response.data.tag.name);
+            await loadPopularTags();
+        } else {
+            boxupview(response.data.message || 'Tạo thẻ thất bại.', false);
+            $('#save-tag-btn').html('<i class="fa fa-save"></i> Lưu thẻ').prop('disabled', false);
+            $('#cancel-tag-btn').prop('disabled', false);
+        }
+    } catch (error) {
+        boxupview('Đã xảy ra lỗi khi tạo thẻ.', false);
+        $('#save-tag-btn').html('<i class="fa fa-save"></i> Lưu thẻ').prop('disabled', false);
+        $('#cancel-tag-btn').prop('disabled', false);
+    }
+}
+
+// Function to reset tag form
+function resetTagForm() {
+    $('#new-tag-name').val('');
+    $('#new-tag-description').val('');
+    $('#add-tag-form').slideUp();
+}
+
+// Function to load all tags for the selector
+async function loadTags() {
+    try {
+        let response = await AjaxData({
+            action: 'get_website_tags'
+        }, 'get');
+
+        if (response.success && response.data.tags && response.data.tags.length > 0) {
+            // Initialize Select2 dropdown with all tags
+            initializeTagSelector(response.data.tags);
+
+            // Also update popular tags section
+            updatePopularTags(response.data.tags);
+        }
+    } catch (error) {
+        boxupview('Lỗi khi tải thẻ.', false);
+    }
+}
+
+// Function to update the popular tags display
+function updatePopularTags(tags) {
+    // Sort tags by count (most used first)
+    var sortedTags = tags.slice().sort(function(a, b) {
+        return b.count - a.count;
+    });
+
+    // Get top 15 tags for the popular tags section
+    var topTags = sortedTags.slice(0, 15);
+
+    // Create HTML for popular tags
+    var tagsHtml = '';
+    topTags.forEach(function(tag) {
+        tagsHtml += '<a href="javascript:void(0)" class="badge badge-secondary mr-1 mb-1 popular-tag" data-tag="' + tag.name + '">' +
+            tag.name + ' (' + tag.count + ')</a>';
+    });
+
+    // Update UI
+    $('.popular-tags-list').html(tagsHtml);
+    $('#popular-tags').removeClass('d-none');
+
+    // Add click handlers
+    $('.popular-tag').on('click', function() {
+        addTag($(this).data('tag'));
+    });
+}
