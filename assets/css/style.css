@@ -1086,3 +1086,172 @@ table.dataTable thead>tr>td.dt-ordering-desc span.dt-column-order {
 .services_area.open .service-body-left {
     transform: translateX(0);
 }
+#list_post_wrapper .bottom.pagination-container {
+    margin: 10px 0 16px 0;
+    padding-top: 16px;
+    border-top: 1px solid rgba(0, 0, 0, 0.3);
+}
+#list_post tbody td:nth-child(4) {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+#list_post tbody td:nth-child(4) .text-muted {
+    flex: 1;
+    white-space: nowrap;
+}
+.section-header h3.section-title {
+    margin-bottom: 0;
+}
+.content .section-header.edit-page {
+    margin-bottom: 16px;
+}
+.content .dautrang-suasanpham a {
+    margin: 0;
+}
+.dautrang-suasanpham div {
+    display: flex;
+    gap: 10px;
+}
+
+.quanly-kho #product_warehouse {
+    margin-right: 15px;
+}
+.tab-content-container .tab-content .ul-tinhtrang li {
+    padding: 0;
+    border: 0;
+}
+.edit-page .detailproduct-name{
+    margin-bottom: 16px;
+}
+.edit-page .col-9.chinhsuasanpham .form-group.slug,
+.edit-page .col-9.chinhsuasanpham .mota-sanpham {
+    display: none;
+}
+.edit-page .col-9.chinhsuasanpham .card.mb-3 .card-body .form-group {
+    margin-bottom: 16px;
+}
+.edit-page .col-9.chinhsuasanpham .card.mb-3 .card-body .form-group:last-child {
+    margin: 0;
+}
+.edit-page .col-9.chinhsuasanpham .card.mb-3 .card-body .form-group input:focus,
+.edit-page .col-9.chinhsuasanpham .card.mb-3 .card-body .form-group textarea:focus {
+    box-shadow: none;
+}
+.edit-page .col-3.sidebarsanpham {
+    padding: 0;
+}
+.edit-page .col-9.chinhsuasanpham {
+    flex: 1;
+}
+.edit-page-inner {
+    display: flex;
+    gap: 20px;
+    padding: 0  !important;
+}
+.edit-page .col-3.sidebarsanpham .form-group {
+    padding: 16px;
+    background: #fff;
+    margin-bottom: 16px;
+    border-radius: 4px;
+}
+.edit-page .col-3.sidebarsanpham .form-group .form-group {
+    padding: 16px 0 0 0;
+    margin-bottom: 0;
+}
+.edit-page .form-group .form-control:focus,
+.detailproduct-name input:focus {
+    box-shadow: none;
+    border-color: #000 !important;
+}
+#preview-container,
+#preview-container #no-featured-image  {
+    width: 100%;
+}
+
+.sidebarsanpham #btn-selected-img {
+    margin-bottom: 16px;
+}
+.edit-page .col-3.sidebarsanpham #featured-image-container  {
+    margin-bottom: 16px;
+}
+.edit-page .col-3.sidebarsanpham #set-featured-image-btn {
+    margin-bottom: 5px;
+    border-radius: 5px;
+}
+.content .edit-blog  {
+    margin-bottom: 16px;
+}
+.blog-page .detailproduct-name input {
+    margin-bottom: 16px;
+}
+.blog-page .form-group.slug {
+    padding: 16px;
+    background: #fff;
+    border-radius: 4px;
+}
+.blog-page .form-group.slug .input-group {
+    margin: 5px 0;
+}
+.blog-page .form-group.slug .input-group .input-group-text{
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.blog-page .form-group.slug .input-group .form-control:focus{
+    box-shadow: none;
+}
+.blog-page .card.seo {
+    margin-top: 16px;
+}
+.blog-page .card.seo .form-group {
+    margin-bottom: 16px;
+}
+.blog-page .card.seo .form-group:last-child {
+    margin-bottom: 0;
+}
+.blog-page .card.seo .form-group .form-control:focus{
+    box-shadow: none;
+}
+.content .edit-blog-inner {
+    padding: 0;
+    display: flex;
+    gap: 20px;
+}
+.blog-page .col-3.sidebarsanpham .form-group {
+    padding: 16px;
+    background: #fff;
+    margin-bottom: 16px;
+}
+.blog-page .col-3.sidebarsanpham .form-group .form-control{
+    margin: 5px 0;
+}
+.blog-page .col-3.sidebarsanpham .form-group .form-control:focus {
+    box-shadow: none;
+    border :1px solid
+}
+.blog-page .col-9.chinhsuasanpham .form-control:focus {
+    box-shadow: none;
+}
+.blog-page .col-3.sidebarsanpham .card-body #set-featured-image-btn {
+    border-radius: 4px;
+    margin-bottom: 5px;
+}
+.content .blog-page .col-3.sidebarsanpham .thesanpham .form-group {
+    margin-bottom: 0;
+    margin-top: 0 !important;
+}
+.content .blog-page .col-3.sidebarsanpham .thesanpham .form-group.bh {
+    padding-top: 0;
+}
+.content .blog-page .col-3.sidebarsanpham .card-body .btn-hv {
+    padding: 0 16px 16px
+}
+.content .blog-page .col-3.sidebarsanpham .danhmuc-sanpham .btn-ctg {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.content .blog-page .col-3.sidebarsanpham .danhmuc-sanpham .btn-ctg button {
+    width: fit-content;
+    min-width: 170px;
+}

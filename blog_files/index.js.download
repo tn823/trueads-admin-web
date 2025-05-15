@@ -1,0 +1,390 @@
+let list_post = new DataTable("#list_post", {
+    paging: true, // Bật phân trang
+    pageLength: 10,
+    buttons: [{
+        extend: "excel",
+        class: "buttons-excel",
+        filename: "DanhSachBaiViet",
+        title: "Danh Sách Bài Viết",
+    }, ],
+    columns: [
+        { data: "id", orderable: false, searchable: false, visible: false },
+        { data: "check", orderable: false, searchable: false },
+        { data: "image" },
+        { data: "title" },
+        { data: "slug" },
+        { data: "category" },
+        { data: "tab" },
+        { data: "date" },
+        { data: "status" },
+        { data: "author" },
+        { data: "comment_status" },
+        { data: "seo_keywords" },
+        { data: "seo_title" },
+        { data: "seo_description" },
+
+    ],
+    dom: 'rt<"bottom pagination-container"lfp><"clear">',
+    language: {
+        lengthMenu: "Hiển thị _MENU_ bản ghi mỗi trang", // Tùy chỉnh văn bản
+        info: "Đang hiển thị từ _START_ đến _END_ của _TOTAL_ bản ghi", // Hiển thị thông tin bản ghi
+        paginate: {
+            first: "«",
+            previous: "‹",
+            next: "›",
+            last: "»",
+        },
+    },
+    initComplete: function() {
+        $(".dt-search").hide();
+        $("#post-search-input").on("keyup", function() {
+            list_post.search(this.value).draw();
+        });
+    },
+    drawCallback: function() {
+        $(".dataTables_paginate .paginate_button").addClass("btnstyle");
+    },
+    createdRow: function(row, data, dataIndex) {
+        $(row).attr("id", "post-row-" + data.id);
+    }
+});
+
+var currentPage = 1;
+var postsPerPage = 10;
+init()
+
+function init() {
+    loadPosts();
+    loadCategories();
+    bindEvents();
+}
+
+function bindEvents() {
+    // Search button click
+    $('#search-button').on('click', function() {
+        currentPage = 1;
+        loadPosts();
+    });
+
+    // Enter key in search input
+    $('#search-input').on('keypress', function(e) {
+        if (e.which === 13) {
+            currentPage = 1;
+            loadPosts();
+        }
+    });
+
+    // Filter change
+    $('#category-filter, #status-filter').on('change', function() {
+        currentPage = 1;
+        loadPosts();
+    });
+
+    // Comment filter change
+    $('#comment-filter').on('change', function() {
+        currentPage = 1;
+        loadPosts();
+    });
+
+    // Reset filters
+    $('#reset-filters').on('click', function() {
+        $('#search-input').val('');
+        $('#category-filter').val('');
+        $('#status-filter').val('');
+        $('#comment-filter').val('');
+        currentPage = 1;
+        loadPosts();
+    });
+
+    // Pagination click
+    $(document).on('click', '.page-link', function(e) {
+        e.preventDefault();
+        var page = $(this).data('page');
+        if (page) {
+            currentPage = page;
+            loadPosts();
+        }
+    });
+
+    // Delete post button
+    $(document).on('click', '.delete-post-btn', function() {
+        var postId = $(this).data('id');
+        var postTitle = $(this).data('title');
+
+        $('#delete-post-title').text(postTitle);
+        $('#confirm-delete-post').data('post-id', postId);
+        $('#delete-post-modal').modal('show');
+    });
+
+    // Confirm delete post
+    $('#confirm-delete-post').on('click', function() {
+        deletePost($(this).data('post-id'));
+    });
+}
+
+function initCopyLinks() {
+    $('.copy-link').on('click', function(e) {
+        e.preventDefault();
+        const slug = $(this).data('slug');
+        const url = `/page/${slug}`;
+
+        // Create temporary input
+        const temp = $('<input>');
+        $('body').append(temp);
+        temp.val(url).select();
+        document.execCommand('copy');
+        temp.remove();
+
+        // Show tooltip
+        $(this).attr('title', 'Đã sao chép!').tooltip('_fixTitle').tooltip('show');
+
+        // Reset tooltip after delay
+        setTimeout(() => {
+            $(this).attr('title', 'Sao chép đường dẫn').tooltip('_fixTitle');
+        }, 1500);
+    });
+}
+// Function to load posts
+async function loadPosts() {
+    $('#posts-list').html('<tr><td colspan="8" class="text-center">Đang tải dữ liệu...</td></tr>');
+    let data = {
+        action: 'get_website_posts',
+        data: {
+            post_type: 'post',
+        }
+    };
+    let response = await AjaxData(data, 'get');
+    let urlhost = location.hostname;
+    if (location.hostname == "localhost") {
+        let fullPath = location.pathname;
+        let pathSegments = fullPath.split('/');
+        urlhost = location.hostname + `/${pathSegments[1]}/${pathSegments[2]}`;
+    };
+    let hostnameurl = `${location.protocol}//` + urlhost + `/`;
+    if (response.success && response.data.posts) {
+        renderPosts(response.data.posts, hostnameurl);
+    }
+}
+
+// Function to load categories
+async function loadCategories() {
+    let response = await AjaxData({
+        action: 'get_website_categories'
+    }, 'get');
+
+    if (response.success && response.data.categories) {
+        var options = '<option value="">-- Tất cả danh mục --</option>';
+
+        $.each(response.data.categories, function(index, category) {
+            options += '<option value="' + category.id + '">' + category.name + '</option>';
+        });
+
+        $('#category-filter').html(options);
+    }
+}
+
+// Function to render posts
+function renderPosts(posts, url) {
+    let dataSet = [];
+    $.each(posts, function(index, post) {
+                var statusBadge = getStatusBadge(post.status);
+                var categoryText = '';
+                if (post.categories && post.categories.length > 0) {
+                    var categoryNames = [];
+                    $.each(post.categories, function(i, cat) {
+                        categoryNames.push(cat.name);
+                    });
+                    categoryText = categoryNames.map(name => tag_key(name)).join(', ');
+                } else {
+                    categoryText = '<em>Chưa phân loại</em>';
+                }
+                var commentStatus = post.comment_status === 'open' ?
+                    '<span class="text-success" title="Cho phép bình luận"><i class="fa fa-comments"></i></span>' :
+                    '<span class="text-danger" title="Không cho phép bình luận"><i class="fa fa-comments-o"></i></span>';
+                let post_item = {
+                        id: post.id,
+                        check: `<input type="checkbox" class="item-check" data-slug="${post.slug}" value="${post.id}" />`,
+                        image: `<img style="width: 100%; " src="${post.thumbnail}" />`,
+                        title: `<a href="?page=post&param=create&id=${post.id}"  title="Chỉnh sửa">${length_key(post.title,20)}</a>`,
+                        slug: `  <span class="text-muted">${length_key(post.slug,10)}</span>
+                        <a href="#" class="copy-link ml-1" data-slug="${post.slug}" title="Sao chép đường dẫn">
+                            <i class="fas fa-copy"></i>
+                        </a>
+                         ${post.status === 'publish' ? `<a href="${url}${post.slug}" target="_blank" class="ml-1" title="Xem trang"><i class="fas fa-external-link-alt"></i></a>` : ''}
+                        `,
+            category: categoryText,
+            tab: post.tags.map(tag => tag_key(tag.name)).join(', '),
+            date: `<span class="text-muted">${formatDate(post.date_created)}</span>`,
+            status: statusBadge,
+            author: post.author_name,
+            comment_status: commentStatus,
+            seo_keywords: post.seo_keywords,
+            seo_title: post.seo_title,
+            seo_description: post.seo_description,
+        }
+        dataSet.push(post_item);
+    });
+    list_post.clear();
+    list_post.rows.add(dataSet);
+    list_post.draw();
+
+    // $('#posts-list').html(html);
+}
+
+function length_key(key,length) {
+    if (key.length > length) {
+        return key.substring(0, length) + '...';
+    }
+    return key;
+}
+function format_date(date) {
+    return new Date(date).toLocaleDateString('vi-VN', { year: 'numeric', month: '2-digit', day: '2-digit' });
+}
+
+function tag_key(key) {
+    const length = key.length;
+    let colorClass = 'bg-secondary'; // Mặc định
+  
+    if (length <= 4) {
+      colorClass = 'bg-success';
+    } else if (length <= 8) {
+      colorClass = 'bg-info';
+    } else if (length <= 12) {
+      colorClass = 'bg-warning';
+    } else {
+      colorClass = 'bg-danger';
+    }
+  
+    return `<span class="badge ${colorClass}">${key}</span>`;
+  }
+  
+
+// Function to render pagination
+function renderPagination(total, totalPages, currentPage) {
+    var start = (currentPage - 1) * postsPerPage + 1;
+    var end = Math.min(start + postsPerPage - 1, total);
+
+    updatePaginationInfo(start, end, total);
+
+    if (totalPages <= 1) {
+        $('#pagination').html('');
+        return;
+    }
+
+    var html = '';
+
+    // Previous button
+    html += '<li class="page-item' + (currentPage === 1 ? ' disabled' : '') + '">';
+    html += '<a class="page-link" href="#" data-page="' + (currentPage - 1) + '" aria-label="Previous">';
+    html += '<span aria-hidden="true">&laquo;</span>';
+    html += '</a></li>';
+
+    // Page numbers
+    var startPage = Math.max(1, currentPage - 2);
+    var endPage = Math.min(totalPages, startPage + 4);
+
+    if (endPage - startPage < 4 && startPage > 1) {
+        startPage = Math.max(1, endPage - 4);
+    }
+
+    for (var i = startPage; i <= endPage; i++) {
+        html += '<li class="page-item' + (i === currentPage ? ' active' : '') + '">';
+        html += '<a class="page-link" href="#" data-page="' + i + '">' + i + '</a></li>';
+    }
+
+    // Next button
+    html += '<li class="page-item' + (currentPage === totalPages ? ' disabled' : '') + '">';
+    html += '<a class="page-link" href="#" data-page="' + (currentPage + 1) + '" aria-label="Next">';
+    html += '<span aria-hidden="true">&raquo;</span>';
+    html += '</a></li>';
+
+    $('#pagination').html(html);
+}
+
+// Update pagination info
+function updatePaginationInfo(start, end, total) {
+    $('#pagination-start').text(start);
+    $('#pagination-end').text(end);
+    $('#pagination-total').text(total);
+}
+
+ 
+function getStatusBadge(status) {
+    var badge = '';
+
+    switch (status) {
+        case 'publish':
+            badge = '<span class="text-success">Đã xuất bản</span>';
+            break;
+        case 'draft':
+            badge = '<span class="text-secondary">Bản nháp</span>';
+            break;
+        case 'pending':
+            badge = '<span class="text-warning">Chờ duyệt</span>';
+            break;
+        default:
+            badge = '<span class="text-info">' + status + '</span>';
+    }
+
+    return badge;
+}
+
+// Format date
+function formatDate(dateString) {
+    var date = new Date(dateString);
+    var day = ('0' + date.getDate()).slice(-2);
+    var month = ('0' + (date.getMonth() + 1)).slice(-2);
+    var year = date.getFullYear();
+    return day + '/' + month + '/' + year;
+}
+
+// Show alert
+function showAlert(type, message) {
+    var alertHtml = '<div class="alert alert-' + type + ' alert-dismissible fade show" role="alert">';
+    alertHtml += message;
+    alertHtml += '<button type="button" class="close" data-dismiss="alert" aria-label="Close">';
+    alertHtml += '<span aria-hidden="true">&times;</span>';
+    alertHtml += '</button>';
+    alertHtml += '</div>';
+
+    $('.dashboard-section').prepend(alertHtml);
+
+    // Auto dismiss after 5 seconds
+    setTimeout(function() {
+        $('.alert').alert('close');
+    }, 5000);
+}
+
+
+$('#check-all').on('change', function() {
+    let isChecked = $(this).is(':checked');
+    if (isChecked) {
+        $('.item-check').prop('checked', true);
+    } else {
+        $('.item-check').prop('checked', false);
+    }
+});
+$(".checkstatus").on('click', async function() {
+    let list_post = [];
+    $('.item-check:checked').each(function() {
+        let slug = $(this).data('slug');
+        let id = Number($(this).val());
+        list_post.push({ id: id, slug: slug });
+    });
+    let data = {
+        action: 'delete_website_posts',
+        data: {
+            list_post: list_post
+        }
+    };
+    console.log(data);
+    let response = await AjaxData(data, 'post');
+    if (response.success) {
+        boxupview('Xóa thành công');
+        $('.item-check:checked').each(function() {
+            $(this).closest('tr').remove();
+        });
+    } else {
+        boxupview('Lỗi');
+    }
+});
