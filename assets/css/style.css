@@ -1255,3 +1255,50 @@ table.dataTable thead>tr>td.dt-ordering-desc span.dt-column-order {
     width: fit-content;
     min-width: 170px;
 }
+.sidebar_main .groupmenu_title {
+    padding-bottom: 16px;
+}
+ .container.ed-menu {
+    margin-top: 0 !important;
+}
+.ed-menu .main-title h1 {
+    font-size: 24px;
+    margin-bottom: 16px;
+}
+.ed-menu .available-items h2 {
+    font-size: 20px;
+    margin: 0;
+    padding: 16px;
+}
+.ed-menu .available-items {
+    padding: 0;
+}
+.ed-menu .available-items-list {
+    padding: 16px;
+}
+.ed-menu .available-items-list .custom-links-section .section-content{
+    padding: 16px;
+}
+.ed-menu .available-items-list .custom-links-section .section-content .custom-links-form {
+    padding: 0;
+}
+.ed-menu .available-items-list .categories-section .section-content,
+.ed-menu .available-items-list .pages-section .section-content {
+    padding: 16px;
+}
+.ed-menu .available-items-list .categories-section .section-content li.available-item,
+.ed-menu .available-items-list .pages-section .section-content li.available-item  {
+    margin-bottom: 16px;
+}
+.ed-menu .available-items-list .categories-section .section-content li.available-item:last-child,
+.ed-menu .available-items-list .pages-section .section-content li.available-item:last-child {
+    margin-bottom: 0;
+}
+.section-header.edit-blog.container,
+.section-header.edit-page.container  {
+    padding: 0;
+    margin-top: 0 !important;
+}
+.container.ed-menu .menu-selector select {
+    width: 350px;
+}

@@ -1,0 +1,902 @@
+$(document).ready(function() {
+    let currentMenuId = null;
+
+    async function loadAvailableMenus() {
+        let data = {
+            action: 'get_menus',
+            data: {}
+        }
+        let response = await AjaxData(data, 'get');
+        if (response.success) {
+            const $dropdown = $("#menu-dropdown");
+            $dropdown.find('option:not(:first)').remove();
+
+            response.data.forEach(menu => {
+                $dropdown.append(`<option value="${menu.id}">${menu.name}</option>`);
+            });
+
+            if (response.data.length > 0) {
+                const firstMenu = response.data[0];
+                $dropdown.val(firstMenu.id);
+                currentMenuId = firstMenu.id;
+
+                fetchMenuData();
+                loadAvailablePosts();
+                loadAvailableBlogPosts();
+                loadProductCategories();
+                loadProducts();
+            }
+        }
+    }
+
+    async function loadAvailablePosts() {
+        let data = {
+            action: 'get_posts_with_meta',
+            post_type: 'page',
+            short: true
+        };
+        let response = await AjaxData(data, 'get');
+        if (response.success) {
+            renderSection('pages', response.data);
+        }
+    }
+
+    async function loadAvailableBlogPosts() {
+        let data = {
+            action: 'get_posts_with_meta',
+            post_type: 'post',
+            short: true
+        };
+        let response = await AjaxData(data, 'get');
+        if (response.success) {
+            renderSection('posts', response.data);
+        }
+    }
+
+    async function loadProductCategories() {
+        let data = {
+            action: 'get_posts_with_meta',
+            post_type: 'product_cat',
+            short: true
+        };
+        let response = await AjaxData(data, 'get');
+        if (response.success) {
+            renderSection('categories', response.data);
+        }
+    }
+
+    async function loadProducts() {
+        let data = {
+            action: 'get_posts_with_meta',
+            post_type: 'product',
+            short: true
+        };
+        let response = await AjaxData(data, 'get');
+        if (response.success) {
+            renderSection('products', response.data);
+        }
+    }
+    function isValidUrl(str) {
+        try {
+            new URL(str);
+            return true;
+        } catch (_) {
+            return false;
+        }
+    }
+    function renderSection(type, items) {
+        const titles = {
+            'pages': 'Trang',
+            'posts': 'Bài viết',
+            'categories': 'Loại sản phẩm',
+            'products': 'Sản phẩm'
+        };
+
+        $(`.${type}-section`).remove();
+
+        const section = $(`
+            <div class="${type}-section section-wrapper">
+                <div class="section-header">
+                    <h3>${titles[type]}</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <ul class="available-list">
+                        ${items.map(item => {
+            let itemUrl = item.guid;
+            if (type === 'categories') {
+                const fullUrl = window.location.href;
+                const baseUrl = fullUrl.split('/website')[0];
+                itemUrl = isValidUrl(item.guid)
+                    ? item.guid
+                    : `${baseUrl}${item.guid}`;
+            }
+
+            return `
+                                <li class="available-item" 
+                                    data-id="${item.ID}"
+                                    data-url="${itemUrl}"
+                                    data-title="${item.title}">
+                                    <div class="available-item-bar">
+                                        <span class="item-title">${item.title}</span>
+                                        <span class="item-type">${titles[type]}</span>
+                                        <button class="add-to-menu">Chọn</button>
+                                    </div>
+                                </li>
+                            `;
+        }).join('')}
+                    </ul>
+                </div>
+            </div>
+        `);
+
+        const $container = $('.available-items-list');
+        switch(type) {
+            case 'pages':
+                $container.append(section);
+                break;
+            case 'posts':
+                if ($('.pages-section').length) {
+                    $('.pages-section').after(section);
+                } else {
+                    $container.append(section);
+                }
+                break;
+            case 'products':
+                if ($('.posts-section').length) {
+                    $('.posts-section').after(section);
+                } else if ($('.pages-section').length) {
+                    $('.pages-section').after(section);
+                } else {
+                    $container.append(section);
+                }
+                break;
+            case 'categories':
+                if ($('.products-section').length) {
+                    $('.products-section').after(section);
+                } else if ($('.posts-section').length) {
+                    $('.posts-section').after(section);
+                } else if ($('.pages-section').length) {
+                    $('.pages-section').after(section);
+                } else {
+                    $container.append(section);
+                }
+                break;
+        }
+
+        section.find('.section-header').on('click', function() {
+            const $content = $(this).next('.section-content');
+            const $icon = $(this).find('.toggle-icon');
+            $content.slideToggle();
+            $icon.toggleClass('collapsed');
+        });
+
+        section.find('.add-to-menu').on('click', function() {
+            if (!currentMenuId) {
+                alert('Please select a menu first');
+                return;
+            }
+            const $item = $(this).closest('.available-item');
+            addItemToMenu($item);
+        });
+    }
+
+    const styles = `
+        <style>
+            .section-wrapper {
+                margin-bottom: 15px;
+                border: 1px solid #ddd;
+                background: #fff;
+            }
+            .section-header {
+                padding: 10px 15px;
+                background: #f5f5f5;
+                cursor: pointer;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .section-header h3 {
+                margin: 0;
+                font-size: 14px;
+                font-weight: 600;
+            }
+            .section-content {
+                padding: 10px;
+            }
+            .toggle-icon {
+                transition: transform 0.3s;
+            }
+            .toggle-icon.collapsed {
+                transform: rotate(-90deg);
+            }
+            .available-list {
+                margin: 0;
+                padding: 0;
+                list-style: none;
+            }
+            .available-item {
+                margin-bottom: 5px;
+            }
+            .available-item-bar {
+                padding: 8px;
+                background: #f9f9f9;
+                border: 1px solid #e5e5e5;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .item-title {
+                flex: 1;
+            }
+            .item-type {
+                color: #666;
+                margin: 0 10px;
+                font-size: 12px;
+            }
+            .add-to-menu {
+                padding: 4px 8px;
+                background: #2271b1;
+                color: #fff;
+                border: none;
+                border-radius: 3px;
+                cursor: pointer;
+            }
+            .add-to-menu:hover {
+                background: #135e96;
+            }
+            .available-items-list {
+                max-height: 600px;
+                overflow-y: auto;
+                padding: 10px;
+            }
+            .menu-item-2025.removing {
+                opacity: 0;
+                transform: translateX(20px);
+                transition: all 0.3s ease;
+            }
+            
+            .item-controls {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .edit-item,
+            .remove-item {
+                font-size: 13px;
+                padding: 4px 10px;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                min-width: 70px;
+                font-weight: 500;
+            }
+
+            .edit-item {
+                background: #f0f0f1;
+                color: #2271b1;
+                border: 1px solid #2271b1;
+            }
+
+            .edit-item:hover {
+                background: #2271b1;
+                color: #fff;
+            }
+
+            .remove-item {
+                background: #fff;
+                color: #dc3545;
+                border: 1px solid #dc3545;
+            }
+
+            .remove-item:hover {
+                background: #dc3545;
+                color: #fff;
+                box-shadow: 0 1px 3px rgba(220, 53, 69, 0.3);
+            }
+
+            .remove-item:active {
+                transform: translateY(1px);
+            }
+
+            .remove-item:disabled {
+                background: #f5f5f5;
+                border-color: #ddd;
+                color: #999;
+                cursor: not-allowed;
+                box-shadow: none;
+            }
+
+            .menu-item-handle {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 10px 15px;
+                background: #fff;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                margin-bottom: 5px;
+            }
+
+            .menu-item-handle:hover {
+                border-color: #2271b1;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            }
+
+            .item-title {
+                font-size: 14px;
+                font-weight: 500;
+                color: #1d2327;
+            }
+
+            @keyframes spin {
+                to { transform: rotate(360deg); }
+            }
+
+            .remove-item.loading::before {
+                content: '';
+                display: inline-block;
+                width: 12px;
+                height: 12px;
+                border: 2px solid #dc3545;
+                border-top-color: transparent;
+                border-radius: 50%;
+                margin-right: 6px;
+                animation: spin 0.8s linear infinite;
+            }
+
+            .remove-item.loading {
+                background: #fff;
+                color: #dc3545;
+                opacity: 0.8;
+            }
+             .custom-links-form {
+                padding: 15px;
+            }
+            
+            .form-group {
+                margin-bottom: 15px;
+            }
+            
+            .form-group label {
+                display: block;
+                margin-bottom: 5px;
+                font-weight: 500;
+            }
+            
+            .form-group input {
+                width: 100%;
+                padding: 8px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+            }
+            
+            .form-group input:focus {
+                border-color: #2271b1;
+                outline: none;
+                box-shadow: 0 0 0 1px #2271b1;
+            }
+            
+            .submit-custom-link {
+                background: #2271b1;
+                color: #fff;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 4px;
+                cursor: pointer;
+                font-weight: 500;
+            }
+            
+            .submit-custom-link:hover {
+                background: #135e96;
+            }
+            
+            .submit-custom-link:disabled {
+                background: #ccc;
+                cursor: not-allowed;
+            }
+        </style>
+    `;
+    $('head').append(styles);
+
+    $(document).ready(function() {
+        if (!$("#available-menu-items").length) {
+            console.log('Creating menu items container');
+            const $container = $(`
+                <div class="menu-management-frame">
+                    <div class="menu-items-container">
+                        <h2>Add Menu Items</h2>
+                        <div id="available-menu-items" class="available-menu-items-container">
+                        </div>
+                    </div>
+                </div>
+            `);
+            $("#menu-management").append($container);
+        }
+
+        loadAvailableMenus();
+        renderCustomLinksSection();
+    });
+
+    async function addItemToMenu($item) {
+        const itemData = {
+            action: 'create_menu_item',
+            menu_id: currentMenuId,
+            title: $item.data('title'),
+            url: $item.data('url')
+        };
+
+        const $addButton = $item.find('.add-to-menu');
+        const originalText = $addButton.text();
+        $addButton.prop('disabled', true).text('Đang thêm...');
+
+        try {
+            let response = await AjaxData(itemData, 'post');
+            if (response.success) {
+                fetchMenuData();
+                $addButton.text('Đang thêm!');
+                setTimeout(() => {
+                    $addButton.prop('disabled', false).text(originalText);
+                }, 2000);
+            } else {
+                alert('Failed to add menu item');
+                $addButton.prop('disabled', false).text(originalText);
+            }
+        } catch (e) {
+            console.error('Error adding menu item:', error);
+            alert('Failed to add menu item');
+            $addButton.prop('disabled', false).text(originalText);
+        }
+
+    }
+
+
+    $("#menu-dropdown").on('change', function() {
+        const selectedMenuId = $(this).val();
+        if (selectedMenuId) {
+            $(".menu-items").hide();
+            $(".available-items-list").hide();
+            $("#save-menu").hide();
+            $(".loading-spinner").show();
+            currentMenuId = selectedMenuId;
+
+            Promise.all([
+                fetchMenuData(),
+                loadAvailablePosts(),
+                loadAvailableBlogPosts(),
+                loadProductCategories(),
+                loadProducts()
+            ]).then(() => {
+                $(".loading-spinner").hide();
+                $(".menu-items").show();
+                $(".available-items-list").show();
+                $("#save-menu").show();
+
+
+            }).catch(err => {
+                console.error("Lỗi khi load dữ liệu:", err);
+                $(".loading-spinner").hide();
+                $(".menu-items").show();
+                $(".available-items-list").show();
+                $("#save-menu").show();
+
+
+            });
+        } else {
+            $(".pages-section, .posts-section, .categories-section, .products-section").remove();
+            $("#menu-list").empty();
+        }
+    });
+
+    const initialData = {
+        "success": true,
+        "data": []
+    };
+
+    if (initialData.success) {
+        loadAvailablePosts();
+        loadAvailableBlogPosts();
+        loadProductCategories();
+        loadProducts();
+    }
+
+    async function fetchMenuData() {
+        if (!currentMenuId) return;
+
+        let data = {
+            action: 'get_menu_items',
+            menu_id: currentMenuId,
+        };
+        let response = await AjaxData(data, 'get');
+        if (response.success) {
+            renderMenuStructure(response.data);
+        }
+    }
+
+    function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+    const availableItemsHtml = `
+        <div class="available-items">
+            <h2>Available Items</h2>
+            <div class="predefined-items">
+                <ul id="available-menu-items" class="available-list">
+                </ul>
+            </div>
+        </div>
+    `;
+
+    function createMenuItem(item) {
+        return $(`
+            <li class="menu-item-2025" 
+                id="menu-item-${item.id}" 
+                data-id="${item.id}" 
+                data-parent="${item.parent}" 
+                data-url="${item.url}" 
+                data-menu-order="${item.menu_order}">
+                <div class="menu-item-bar">
+                    <div class="menu-item-handle">
+                        <span class="item-title">${item.title}</span>
+                        <span class="item-controls">
+                            <button class="edit-item">Sửa</button>
+                            <button class="remove-item">Xoá</button>
+                        </span>
+                    </div>
+                </div>
+                <div class="menu-item-settings">
+                    <div class="setting-field">
+                        <label>Navigation Label:</label>
+                        <input type="text" class="menu-item-title" value="${item.title}">
+                    </div>
+                    <div class="setting-field">
+                        <label>URL:</label>
+                        <input type="text" class="menu-item-url" value="${item.url}">
+                    </div>
+                </div>
+                <ul class="sortable-menu"></ul>
+            </li>
+        `);
+    }
+
+    function renderMenuStructure(data) {
+        const $menuList = $("#menu-list");
+        $menuList.empty();
+
+        function renderItems(items, $parent) {
+            items.forEach(item => {
+                const $menuItem = createMenuItem(item);
+                $parent.append($menuItem);
+
+                if (item.children && item.children.length > 0) {
+                    renderItems(item.children, $menuItem.find('> ul.sortable-menu'));
+                }
+            });
+        }
+
+        renderItems(data, $menuList);
+        initializeSortable();
+    }
+
+    function initializeSortable() {
+        $("#menu-list").nestedSortable({
+            handle: ".menu-item-bar",
+            items: "li.menu-item-2025",
+            toleranceElement: "> .menu-item-bar",
+            placeholder: "menu-item-placeholder",
+            forcePlaceholderSize: true,
+            helper: "clone",
+            opacity: 1,
+            tolerance: "pointer",
+            maxLevels: 0,
+            isTree: true,
+            expandOnHover: 700,
+            startCollapsed: false,
+            listType: 'ul',
+            update: function(event, ui) {
+                updateParentIds();
+                updateMenuOrderDisplay();
+            }
+        });
+    }
+
+    function updateParentIds() {
+        $('#menu-list li.menu-item-2025').each(function() {
+            const $item = $(this);
+            const $parent = $item.parent().closest('li.menu-item-2025');
+            const parentId = $parent.length ? $parent.attr('data-id') : "0";
+            $item.attr('data-parent', parentId);
+        });
+    }
+
+    let updateTimeout;
+    $(document).on("input", ".menu-item-title, .menu-item-url", function() {
+        const input = $(this);
+        const menuItem = input.closest(".menu-item-2025");
+        const isTitle = input.hasClass('menu-item-title');
+        const newValue = input.val();
+
+        clearTimeout(updateTimeout);
+
+        updateTimeout = setTimeout(() => {
+            if (isTitle) {
+                menuItem.find("> .menu-item-bar .item-title").text(newValue);
+                menuItem.attr('data-title', newValue);
+            } else {
+                menuItem.attr('data-url', newValue);
+            }
+            updateMenuStructure();
+        }, 300);
+    });
+
+    $(document).on("click", ".edit-item", function(e) {
+        e.preventDefault();
+        const menuItem = $(this).closest(".menu-item-2025");
+        const settings = menuItem.find("> .menu-item-settings");
+
+        if (settings.hasClass('active')) {
+            settings.removeClass('active');
+        } else {
+            $(".menu-item-settings.active").removeClass('active');
+            settings.addClass('active');
+        }
+    });
+
+    function setRemoveButtonLoading($button, isLoading) {
+        if (isLoading) {
+            $button.prop('disabled', true)
+                .addClass('loading')
+                .text('Removing...');
+        } else {
+            $button.prop('disabled', false)
+                .removeClass('loading')
+                .text('Remove');
+        }
+    }
+
+    $(document).on("click", ".remove-item", async function (e) {
+        e.preventDefault();
+        const menuItem = $(this).closest(".menu-item-2025");
+        const itemId = menuItem.attr('data-id');
+
+        if (confirm("Are you sure you want to remove this menu item?")) {
+            const $removeButton = $(this);
+            setRemoveButtonLoading($removeButton, true);
+
+            try {
+                let data = {
+                    action: 'delete_menu_item',
+                    item_id: itemId
+                };
+                let response = await AjaxData(data, 'post');
+                if (response.success) {
+                    menuItem.addClass('removing');
+                    setTimeout(() => {
+                        menuItem.remove();
+                        updateMenuStructure();
+                    }, 300);
+                } else {
+                    alert('Failed to remove menu item');
+                    setRemoveButtonLoading($removeButton, false);
+                }
+            }
+            catch(e){
+                console.error('Error removing menu item:', error);
+                alert('Failed to remove menu item');
+                setRemoveButtonLoading($removeButton, false);
+            }
+        }
+    });
+
+    function updateMenuStructure() {
+        if (!currentMenuId) return;
+
+        function buildFlatMenuData(items, parent = "0") {
+            let flatData = [];
+            items.forEach(item => {
+                if (item && item.item_id) {
+                    const $item = $(`#${item.item_id}`);
+                    if ($item.length) {
+                        flatData.push({
+                            id: parseInt(item.item_id.replace('menu-item-', '')),
+                            title: $item.find(".menu-item-title").first().val(),
+                            url: $item.find(".menu-item-url").first().val(),
+                            parent: parent
+                        });
+
+                        if (item.children && item.children.length) {
+                            flatData = flatData.concat(
+                                buildFlatMenuData(
+                                    item.children,
+                                    item.item_id.replace('menu-item-', '')
+                                )
+                            );
+                        }
+                    }
+                }
+            });
+            return flatData;
+        }
+
+        const menuStructure = $("#menu-list").nestedSortable('toArray', {startDepthCount: 0});
+        const menuData = buildFlatMenuData(menuStructure);
+
+        console.log("Menu structure updated:", menuData);
+    }
+
+    function updateMenuOrderDisplay() {
+        let order = 1;
+        function updateOrders($container) {
+            $container.children('li.menu-item-2025').each(function() {
+                const $item = $(this);
+                $item.attr('data-menu-order', order);
+                $item.find('> .menu-item-bar .item-order').text('#' + order);
+                $item.find('> .menu-item-settings .read-only-field').last().text(order);
+                order++;
+
+                const $childContainer = $item.children('ul.sortable-menu');
+                if ($childContainer.length) {
+                    updateOrders($childContainer);
+                }
+            });
+        }
+        updateOrders($('#menu-list'));
+    }
+
+    function getMenuStructureAsJson() {
+        function buildMenuTree($container, parent = "0") {
+            const items = {
+                menu_id: currentMenuId,
+                data:[]
+            };
+
+            $container.children('li.menu-item-2025').each(function(index) {
+                const $item = $(this);
+                const itemId = $item.attr('data-id');
+                const parentId = $item.attr('data-parent') || parent;
+
+                const menuItem = {
+                    id: itemId,
+                    title: $item.find('> .menu-item-bar .item-title').text().trim(),
+                    url: $item.attr('data-url'),
+                    parent: parentId,
+                    menu_order: index + 1,
+                    children: []
+                };
+
+                const $childContainer = $item.find('> ul.sortable-menu');
+                if ($childContainer.length > 0) {
+                    menuItem.children = buildMenuTree($childContainer, itemId);
+                }
+
+                items.data.push(menuItem);
+            });
+
+            return items;
+        }
+
+        return buildMenuTree($('#menu-list'));
+    }
+
+    $("#save-menu").on('click', async function () {
+        if (!currentMenuId) {
+            alert("Please select a menu first");
+            return;
+        }
+
+        const menuData = getMenuStructureAsJson();
+        console.log('Menu Structure:', JSON.stringify(menuData, null, 2));
+        const $saveButton = $(this);
+        const originalText = $saveButton.text();
+        $saveButton.prop('disabled', true).text('Đang lưu...');
+
+try{
+    let data = {
+        action: 'update_menu_items',
+        ...menuData
+    };
+    let response = await AjaxData(data, 'post');
+    if (response.success) {
+        $saveButton.text('Đã lưu!');
+        setTimeout(() => {
+            $saveButton.prop('disabled', false).text(originalText);
+        }, 2000);
+    } else {
+        alert('Failed to save menu structure');
+        $saveButton.prop('disabled', false).text(originalText);
+    }
+}catch(error){
+    console.error('Error saving menu structure:', error);
+    alert('Failed to save menu structure');
+    $saveButton.prop('disabled', false).text(originalText);
+}
+    });
+    function renderCustomLinksSection() {
+        const section = $(`
+            <div class="custom-links-section section-wrapper">
+                <div class="section-header">
+                    <h3>Custom Links</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="custom-links-form">
+                        <div class="form-group">
+                            <label for="custom-link-url">URL</label>
+                            <input type="url" id="custom-link-url" placeholder="https://" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="custom-link-text">Tiêu đề</label>
+                            <input type="text" id="custom-link-text" placeholder="Nhập tiêu đề" required>
+                        </div>
+                        <button type="button" class="submit-custom-link">Thêm vào menu</button>
+                    </div>
+                </div>
+            </div>
+        `);
+
+        // Add to the available-items-list at the top
+        $('.available-items-list').prepend(section);
+
+        // Add click handlers
+        section.find('.section-header').on('click', function() {
+            const $content = $(this).next('.section-content');
+            const $icon = $(this).find('.toggle-icon');
+            $content.slideToggle();
+            $icon.toggleClass('collapsed');
+        });
+
+        section.find('.submit-custom-link').on('click', async function () {
+            if (!currentMenuId) {
+                alert('Please select a menu first');
+                return;
+            }
+
+            const $button = $(this);
+            const $urlInput = $('#custom-link-url');
+            const $textInput = $('#custom-link-text');
+
+            const url = $urlInput.val().trim();
+            const text = $textInput.val().trim();
+
+            if (!url || !text) {
+                alert('Please fill in both URL and Link Text fields');
+                return;
+            }
+
+            $button.prop('disabled', true).text('Đang thêm...');
+
+            const itemData = {
+                action: 'create_menu_item',
+                menu_id: currentMenuId,
+                title: text,
+                url: url
+            };
+            let response = await AjaxData(itemData, 'post');
+            try {
+                if (response.success) {
+                    $urlInput.val('');
+                    $textInput.val('');
+
+                    fetchMenuData();
+
+                    $button.text('Đã thêm!');
+                    setTimeout(() => {
+                        $button.prop('disabled', false).text('Thêm vào menu');
+                    }, 2000);
+                } else {
+                    alert('Failed to add menu item');
+                    $button.prop('disabled', false).text('Thêm vào menu');
+                }
+            } catch (e) {
+            }
+        });
+    }
+
+    loadAvailableMenus();
+});
+
