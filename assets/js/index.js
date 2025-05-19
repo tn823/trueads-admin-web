@@ -67,3 +67,53 @@ document.addEventListener('DOMContentLoaded', function () {
         closeBtn.addEventListener('click', closeSidebarAndServices);
     }
 });
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    const iconAction = document.querySelector(".icon-action");
+    const listMenu = document.querySelector(".list-menu-setting");
+    let hideTimeout;
+
+    if (iconAction && listMenu) {
+        const showMenu = () => {
+            clearTimeout(hideTimeout);
+            listMenu.classList.remove("hidden");
+        };
+
+        const hideMenu = () => {
+            hideTimeout = setTimeout(() => {
+                listMenu.classList.add("hidden");
+            }, 300); // delay 300ms
+        };
+
+        iconAction.addEventListener("mouseenter", showMenu);
+        iconAction.addEventListener("mouseleave", hideMenu);
+        listMenu.addEventListener("mouseenter", showMenu);
+        listMenu.addEventListener("mouseleave", hideMenu);
+    }
+});
+  
+document.addEventListener("DOMContentLoaded", function () {
+    const tabMenu = document.querySelector(".table-header .tab-menu");
+    const tableHeaderMenu = document.querySelector(".table-header-menu");
+    let hideTimeout;
+
+    if (tabMenu && tableHeaderMenu) {
+        const showMenu = () => {
+            clearTimeout(hideTimeout);
+            tableHeaderMenu.classList.remove("hidden");
+        };
+
+        const hideMenu = () => {
+            hideTimeout = setTimeout(() => {
+                tableHeaderMenu.classList.add("hidden");
+            }, 400); // delay 300ms
+        };
+
+        tabMenu.addEventListener("mouseenter", showMenu);
+        tabMenu.addEventListener("mouseleave", hideMenu);
+        tableHeaderMenu.addEventListener("mouseenter", showMenu);
+        tableHeaderMenu.addEventListener("mouseleave", hideMenu);
+    }
+});
+  
