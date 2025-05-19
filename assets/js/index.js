@@ -116,4 +116,26 @@ document.addEventListener("DOMContentLoaded", function () {
         tableHeaderMenu.addEventListener("mouseleave", hideMenu);
     }
 });
-  
+document.addEventListener("DOMContentLoaded", function () {
+    const tabMenu = document.querySelector(".table-btn-setting");
+    const tableHeaderMenu = document.querySelector(".btn-action-setting");
+    let hideTimeout;
+
+    if (tabMenu && tableHeaderMenu) {
+        const showMenu = () => {
+            clearTimeout(hideTimeout);
+            tableHeaderMenu.classList.remove("hidden");
+        };
+
+        const hideMenu = () => {
+            hideTimeout = setTimeout(() => {
+                tableHeaderMenu.classList.add("hidden");
+            }, 400); // delay 300ms
+        };
+
+        tabMenu.addEventListener("mouseenter", showMenu);
+        tabMenu.addEventListener("mouseleave", hideMenu);
+        tableHeaderMenu.addEventListener("mouseenter", showMenu);
+        tableHeaderMenu.addEventListener("mouseleave", hideMenu);
+    }
+});
