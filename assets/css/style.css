@@ -2294,9 +2294,11 @@ margin-bottom: 16px;
  }
  .row.media .list-media {
     padding: 16px;
+    width: 100%;
  }
  .row.media .list-media .item-media {
     margin-right: 10px;
+    margin-bottom: 10px;
  }
  .row.media .list-media .item-media img {
     cursor: pointer;
@@ -2311,6 +2313,9 @@ margin-bottom: 16px;
     background: #000;
     opacity: .7;
     z-index: 1;
+}
+.action-form .view-switch {
+    display: none;
 }
  
 
