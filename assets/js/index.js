@@ -139,3 +139,35 @@ document.addEventListener("DOMContentLoaded", function () {
         tableHeaderMenu.addEventListener("mouseleave", hideMenu);
     }
 });
+
+
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+  const mediaImages = document.querySelectorAll(".row.media .list-media .item-media img");
+    const infoMedia = document.querySelector(".info-media.card");
+    const backdrop = document.querySelector(".media-modal-backdrop");
+
+    if (!infoMedia || !backdrop) return;
+
+    // Hiển thị khi click ảnh
+    mediaImages.forEach(function (img) {
+        img.addEventListener("click", function () {
+            infoMedia.classList.remove("hidden");
+            backdrop.classList.remove("hidden");
+        });
+  });
+
+    // Ẩn khi click nút close
+    const closeBtn = infoMedia.querySelector(".btn-action button");
+    if (closeBtn) {
+        closeBtn.addEventListener("click", function () {
+            infoMedia.classList.add("hidden");
+            backdrop.classList.add("hidden");
+        });
+  }
+});
+
+
+
+  
