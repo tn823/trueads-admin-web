@@ -2315,7 +2315,71 @@ margin-bottom: 16px;
     z-index: 1;
 }
 
- 
-
-
  /* end media */
+
+
+ /* system dashborad */
+
+ company-info .main-title {
+    margin-bottom: 20px;
+ }
+ .system.content-detail {
+    flex-direction: column;
+    gap: 16px;
+ }
+ .system-header .color-note {
+    display: flex;
+    align-items: center;
+    color: #000;
+    font-size: 15px;
+ }
+ .system-header #btns-action {
+    display: flex;
+    gap: 10px;
+ }
+ .system-title .title-content-detail {
+    font-size: 15px;
+ }
+ .system-info .label-input {
+    font-size: 14px;
+    color: #000;
+    font-weight: 500;
+    min-width: 15%;
+ }
+ .system-info .control-input {
+    padding-bottom: 20px;
+ }
+ .system-info .control-input .input-add.field-row-input {
+    max-width: 400px;
+ }
+ .list-content-detail .system.content-detail {
+    border-bottom: 1px solid #d9d9d9;
+ }
+
+
+
+
+
+
+  /* end system dashborad */
+
+
+
+  /* pricing service */
+ #tab-package {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+ }
+ #tab-panels.card  {
+    padding: 16px;
+    border-top-left-radius: 0;
+ }
+ .tab-panels.card .list_group_service {
+    column-gap: 16px;
+ }
+ .content .tab-panels.card {
+    padding: 16px !important;
+ }
+
+
+  /* end pricing service */

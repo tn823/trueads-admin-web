@@ -1,0 +1,314 @@
+$(document).ready(function () {
+    const $sidebar = $(".sidebar_main");
+    const $toggleBtn = $(".sidebar_control");
+  
+    const param = getParam("param");
+    const arg = getParam("arg");
+  
+    // Đánh dấu menu cha và submenu + item con theo URL
+    $(`.menu-item[data-arg="${arg}"]`).addClass("active");
+    $(`.submenu[data-arg="${arg}"]`).addClass("show");
+    $(`.submenu[data-arg="${arg}"] .itempage[data-param="${param}"]`).addClass("active");
+  
+    // Khôi phục trạng thái collapsed nếu đã lưu
+    if (localStorage.getItem("sidebar_collapsed") === "true") {
+      $sidebar.addClass("collapsed");
+      $toggleBtn.addClass("active");
+      restoreActiveSubmenu(); // mở lại submenu nếu có
+    }
+  
+    // Toggle khi click nút sidebar_control
+    $toggleBtn.on("click", function () {
+      const isCollapsing = !$sidebar.hasClass("collapsed");
+      $sidebar.toggleClass("collapsed");
+      $toggleBtn.toggleClass("active");
+      localStorage.setItem("sidebar_collapsed", isCollapsing);
+  
+      if (isCollapsing) {
+        $(".submenu").removeClass("show");
+      } else {
+        restoreActiveSubmenu();
+      }
+    });
+  
+  
+  
+    // Toggle submenu khi click vào .icon-box
+    $(".menu > ul > li").each(function () {
+      const $iconBox = $(this).find(".icon-box").first();
+      const $submenu = $(this).find(".submenu").first();
+  
+      if ($iconBox.length) {
+        $iconBox.on("click", function (e) {
+          const $sidebar = $(".sidebar_main");
+  
+          // Nếu sidebar đang collapsed thì mở ra
+          if ($sidebar.hasClass("collapsed")) {
+            $sidebar.removeClass("collapsed");
+            $(".sidebar_control").removeClass("active");
+            localStorage.setItem("sidebar_collapsed", false);
+          }
+  
+          // Toggle submenu và đóng các submenu khác
+          $(".submenu").not($submenu).removeClass("show");
+          $submenu.toggleClass("show");
+  
+          e.stopPropagation();
+        });
+      }
+    });
+  
+    // // Click ngoài submenu thì ẩn hết
+    // $(document).on("click", function (e) {
+    //   if (!$(e.target).closest(".menu > ul > li").length) {
+    //     $(".submenu").removeClass("show");
+    //   }
+    // });
+  
+    // Show lại submenu nếu có .itempage.active
+    function restoreActiveSubmenu() {
+      $(".submenu").removeClass("show"); // Reset hết
+      $(".submenu").each(function () {
+        if ($(this).find(".itempage.active").length > 0) {
+          $(this).addClass("show");
+        }
+      });
+    }
+  
+    function getParam(key) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(key);
+    }
+  
+    // Bell sidebar xử lý giữ nguyên như trước
+    $("#notification-icon").on("click", function () {
+      $("#notification-sidebar").addClass("open");
+      $("#overlay").show();
+    });
+  
+    $("#bar-icon").on("click", function () {
+      $("#menu-sidebar").addClass("transform");
+      $("#overlay").show();
+    });
+  
+    $("#close-sidebar, #overlay").on("click", function () {
+      $("#notification-sidebar").removeClass("open");
+      $("#menu-sidebar").removeClass("transform");
+      $("#overlay").hide();
+    });
+  });
+  
+  // Lấy param
+  function getParam(param) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+  }
+  // $(document).ready(function () {
+  //   $(".toggle-services").click(function () {
+  //     $(".services .menu-item").slideToggle(200);
+  //     const icon = $(this).find(".toggle-icon");
+  //     icon.text(icon.text() === "▼" ? "▲" : "▼");
+  //   });
+  // });
+  
+  $(document).ready(function () {
+    const servicesArea = $(".services_area");
+    const logo = $(".header .ser_menu");
+  
+    logo.on("click", function (e) {
+      e.stopPropagation();
+      servicesArea.toggleClass("open");
+    });
+  
+    $(document).on("click", function (e) {
+      if (
+        !servicesArea.is(e.target) &&
+        servicesArea.has(e.target).length === 0 &&
+        !$(e.target).closest(".ser_menu").length
+      ) {
+        servicesArea.removeClass("open");
+      }
+    });
+    // Đóng khi bấm nút .close bên trong .services_area
+    servicesArea.find(".close").on("click", function (e) {
+      e.stopPropagation();
+      servicesArea.removeClass("open");
+    });
+  });
+  
+  
+  // Khởi tạo TinyMCE sau khi DOM đã sẵn sàng
+  document.addEventListener("DOMContentLoaded", () => {
+    // tinymce.init({
+    //   selector: "textarea.default",
+    //   plugins: [
+    //     "advlist",
+    //     "autolink",
+    //     "link",
+    //     "image",
+    //     "lists",
+    //     "charmap",
+    //     "preview",
+    //     "anchor",
+    //     "pagebreak",
+    //     "searchreplace",
+    //     "wordcount",
+    //     "visualblocks",
+    //     "code",
+    //     "fullscreen",
+    //     "insertdatetime",
+    //     "media",
+    //     "table",
+    //     "emoticons",
+    //     "template",
+    //     "codesample",
+    //   ],
+    //   toolbar:
+    //     "undo redo | styles | bold italic underline | alignleft aligncenter alignright alignjustify |" +
+    //     "bullist numlist outdent indent | link image | print preview media fullscreen | " +
+    //     "forecolor backcolor emoticons",
+    //   menu: {
+    //     favs: {
+    //       title: "Menu",
+    //       items: "code visualaid | searchreplace | emoticons",
+    //     },
+    //   },
+    //   menubar: "favs file edit view insert format tools table",
+    //   content_style:
+    //     "body{font-family:Helvetica,Arial,sans-serif; font-size:16px}",
+    // });
+  });
+  
+  function showPopup() {
+    document.getElementById("popup").style.display = "flex";
+  }
+  
+  function hidePopup() {
+    document.getElementById("popup").style.display = "none";
+  }
+  
+  function exportData() {
+    // Thêm logic xuất dữ liệu ở đây
+    alert("Xuất dữ liệu thành công!");
+    hidePopup();
+  }
+  function openTab(evt, tabName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tab-content");
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
+      tabcontent[i].classList.remove("active");
+    }
+    tablinks = document.getElementsByClassName("tab");
+    for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].classList.remove("active");
+    }
+    document.getElementById(tabName).style.display = "block";
+    document.getElementById(tabName).classList.add("active");
+    try{
+      evt.currentTarget.classList.add("active");
+    }catch(e){
+      
+    }
+  }
+  
+  $(".tab").click();
+  
+  // Xử lý slide
+  let currentIndex = 0;
+  const slides = document.getElementById("slide");
+  const totalSlides = 4;
+  const slidesToShow = 2;
+  
+  function showSlide(index) {
+    const offset = -((index / slidesToShow) * 50);
+    slides.style.transform = `translateX(${offset}%)`;
+  }
+  
+  function nextSlide() {
+    currentIndex += slidesToShow;
+    if (currentIndex >= totalSlides) {
+      currentIndex = 0;
+    }
+    showSlide(currentIndex);
+  }
+  
+  function prevSlide() {
+    currentIndex -= slidesToShow;
+    if (currentIndex < 0) {
+      currentIndex = totalSlides - slidesToShow;
+    }
+    showSlide(currentIndex);
+  }
+  function showDanhMucTab(tabId, tabElement) {
+    $(".tab-content-danhmuc").each((i,tab) => {
+      $(tab).css("display","none")
+    });
+   
+    $("#"+tabId).css("display","block")
+    $(".danhmuc-sanpham .tab").each((i,tab) => {
+      $(tab).removeClass("active-tab")
+    });
+   
+    $("."+tabElement).addClass("active-tab");
+  }
+  
+  function showBrandTab(tabId, tabElement) {
+    $(".tab-content-brand").each((i,tab) => {
+      $(tab).css("display","none")
+    });
+    $("#"+tabId).css("display","block")
+    $(".brand-sanpham .tab").each((i,tab) => {
+      $(tab).removeClass("active-tab-brands")
+    });
+    $("."+tabElement).addClass("active-tab-brands");
+  }
+  
+  // Hiện tab đầu tiên khi tải trang
+  showDanhMucTab("tab1", "danhmuc-sanpham .tab");
+  showBrandTab("brand1", "brand-sanpham .tab");
+  
+  // Chuyển tab
+  function openTabDetail(tabName) {
+    var tabs = $(".tab-container-chitiet .tab");
+    var contents = $("#visual, #text");
+  
+    contents.forEach((content) => (content.style.display = "none"));
+    tabs.forEach((tab) => tab.classList.remove("active"));
+  
+    document.getElementById(tabName).style.display = "block";
+    event.currentTarget.classList.add("active");
+  }
+  
+  function insertListItem() {
+    document.getElementById("textArea").value += "<li>Nội dung mục mới</li>\n";
+  }
+  
+  function insertUnorderedList() {
+    document.getElementById("textArea").value +=
+      "<ul><li>Mục 1</li><li>Mục 2</li></ul>\n";
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    const header = document.querySelector('.header');
+    const menu = document.querySelector('.sidebar_main .menu');
+
+    const headerOffset = header.offsetTop;
+    const menuOffset = menu.offsetTop;
+
+    window.addEventListener('scroll', function () {
+     
+        if (window.scrollY > headerOffset) {
+            header.classList.add('fixed-header');
+        } else {
+            header.classList.remove('fixed-header');
+        }
+
+       
+        // if (window.scrollY > menuOffset - 32) {  
+        //     menu.classList.add('fixed-sidebar');
+        // } else {
+        //     menu.classList.remove('fixed-sidebar');
+        // }
+    });
+});
+  

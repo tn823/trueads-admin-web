@@ -1,0 +1,476 @@
+document.addEventListener("DOMContentLoaded", function () {
+  $(".has-icon").on("click", function () {
+    let nametab = $(this).attr("id");
+    $(".has-icon").removeClass("active");
+    $(this).addClass("active");
+    $(".entry-content").removeClass("active").hide();
+    $("." + nametab)
+      .addClass("active")
+      .show();
+    check_has_icon_item();
+  });
+  $(".has-icon-item").on("click", function () {
+    let nametab = $(this).attr("id");
+    $(".has-icon-item").removeClass("active");
+    $(this).addClass("active");
+    check_has_icon_item();
+  });
+
+  function check_has_icon_item() {
+    let has_icon_item = $(".has-icon-item");
+    let item_active = has_icon_item.filter(".active");
+    if (item_active.length > 0) {
+      let name_s = item_active.attr("id");
+      $(".entry-content-item").hide();
+      $("." + name_s).show();
+    }
+  }
+  $(".has-icon-item1").on("click", function () {
+    let nametab = $(this).attr("id");
+    $(".has-icon-item1").removeClass("active");
+    $(this).addClass("active");
+
+    check_has_icon_item1();
+  });
+
+  function check_has_icon_item1() {
+    let has_icon_item = $(".has-icon-item1");
+    let item_active = has_icon_item.filter(".active");
+    if (item_active.length > 0) {
+      let name_s = item_active.attr("id");
+      $(".entry-content-item1").hide();
+      $("." + name_s).show();
+    }
+  }
+  $(".has-icon, .has-icon-item").on("click", function () {
+    let id = $(this).attr("id");
+    let isParent = $(this).hasClass("has-icon");
+    // Bật tab
+    $(this).siblings().removeClass("active");
+    $(this).addClass("active");
+
+    if (isParent) {
+      $(".entry-content").removeClass("active");
+      $("." + id).addClass("active");
+    } else {
+      $(".entry-content-item").hide();
+      $("." + id).show();
+    }
+  });
+});
+/// list service
+//loadServices();
+async function loadServices() {
+  $(".service-grid").html("");
+  let data = {
+    action: "trueads_ai_data",
+    data: {
+      name: "service_server_sys",
+    },
+  };
+  let response = await AjaxData(data, "get");
+  if (response.success) {
+    list_service = response.data;
+    let grouped_service = response.data.reduce((acc, item) => {
+      let keyService = item.key_service;
+      let dayActive = item.day_active;
+
+      if (!acc[keyService]) acc[keyService] = {};
+      if (!acc[keyService][dayActive]) acc[keyService][dayActive] = [];
+
+      acc[keyService][dayActive].push(item);
+
+      return acc;
+    }, {});
+
+    console.log(grouped_service);
+
+    // $.each( grouped_service , (key, serviceGroup) => {
+    //     // Tên class theo key_service
+    //     const key_service = serviceGroup[0].key_service;
+    //     const grid = $("." + key_service + ">.service-grid");
+    //     const groupDiv = $(`<div class="grouped-service" data-group="${key}"></div>`);
+    //     // $.each(serviceGroup, (i, service) => {
+    //     //     let html = `
+    //     //         <div class="service-card">
+    //     //             <div class="item_service" style="display: flex; align-items: flex-start;">
+    //     //                 <div class="service-icon" style="width: 30px; height: 30px;">
+    //     //                     ${service.image}
+    //     //                 </div>
+    //     //                 <h2>
+    //     //                    ${check_name_view(service.key_service, service.service_category)} - ${service.day_active} ngày
+    //     //                 </h2>
+    //     //             </div>
+    //     //             <p>${service.service_name} ${service.is_active == "1" ? "(Hoạt động)" : "(Ngưng)"}</p>
+    //     //             <p>${service.service_description}</p>
+    //     //             <div class="price">
+    //     //                 Giá gốc: <del>${Number(service.price).toLocaleString()} VND</del><br>
+    //     //                 Khuyến mãi: <strong>${Number(service.price_sale).toLocaleString()} VND</strong>
+    //     //             </div>
+    //     //             <div class="buttons">
+    //     //                 <button type="button" class="btn btn-outline-primary update_services_provide_btn"
+    //     //                     data-bs-toggle="modal" data-bs-target="#staticBackdrop" data-id="${service.service_id}">
+    //     //                     Chỉnh sửa
+    //     //                 </button>
+    //     //                 <button class="btn btn-outline-danger delete_service_id" data-id="${service.service_id}">
+    //     //                     <i class="fa-solid fa-trash"></i>
+    //     //                 </button>
+    //     //             </div>
+    //     //         </div>
+    //     //     `;
+    //     //     groupDiv.append(html);
+    //     // });
+    //     // grid.append(groupDiv);
+    // });
+  }
+}
+
+async function get_services_provide_site() {
+  $(".service-grid").html("");
+  let site_host = get_site_host();
+  let data = {
+    action: "trueads_ai_data",
+    data: {
+      name: "sites_manage_email_role",
+      data: {
+        email: await $(".email_site").val(),
+        host: site_host,
+      },
+    },
+  };
+  let response = await AjaxData(data, "get");
+  console.log(response);
+  if (response.success) {
+    list_service_meta = response.data;
+  }
+}
+
+function check_service(key) {
+  let name = "";
+  switch (key) {
+    case key < 30:
+      name = key + "Ngày";
+      break;
+    case key == 30:
+      name = 1 + "Tháng";
+      break;
+    case key == 182:
+      name = 6 + "Tháng";
+      break;
+    case key == 365:
+      name = 1 + "Năm";
+      break;
+    default:
+      break;
+  }
+}
+
+function check_name(key) {
+  let name = "";
+  switch (key) {
+    case key < 30:
+      name = key + "Ngày";
+      break;
+    case key == 30:
+      name = 1 + "Tháng";
+      break;
+    case key == 182:
+      name = 6 + "Tháng";
+      break;
+    case key == 365:
+      name = 1 + "Năm";
+      break;
+    default:
+      break;
+  }
+}
+/// view danh sách dịch vụ
+let list_service = [];
+let list_service_meta = [];
+let group_service = [];
+get_infor();
+async function get_infor() {
+  // await get_services_provide_site()
+  let site_host = get_site_host();
+  $(".view_service").append("Đang tải");
+
+  let data = {
+    action: "trueads_ai_data",
+    data: {
+      name: "sites_manage_email_role",
+      data: {
+        email: $(".email_site").val(),
+        host: site_host,
+      },
+    },
+  };
+  let response = await AjaxData(data, "get");
+  let id = 0;
+  console.log(response);
+  let item_site = [];
+  if (response.success) {
+    group_service = response.data.group_service;
+    $.each(group_service, (k, i) => {
+      if (k == 0) {
+        id = i.id;
+      }
+      let status =
+        i.active == "1" && new Date(i.end_date) > new Date()
+          ? "Đang hoạt động"
+          : "Ngừng kích hoạt";
+      let status_option =
+        status == "Đang hoạt động" ? "Ngừng kích hoạt" : "Đang hoạt động";
+      let price_view = `<div class="price-tag">${formatPrice(
+        i.price_sale
+      )} VNĐ/tháng</div>`;
+      if (i.price != i.price_sale) {
+        price_view = `  <div class="price-tag"><del>  ${formatPrice(
+          i.price
+        )} VNĐ/tháng</del></div>
+                                <div class="price-tag">${formatPrice(
+                                  i.price_sale
+                                )} VNĐ/tháng</div>`;
+      }
+      let html = `<div class="service-card checkview_click  ${
+        k == 0 ? "active" : ""
+      }" data-id="${i.id}">
+                                <h3 class="service-name">${i.name}</h3>
+                                 ${price_view}
+                                <div>${status}<div>
+                            </div>
+                            `;
+      max_id_service = Number(i.id);
+      $("#servicesContainer").append(html);
+    });
+    load_infor_service(group_service[0]);
+  } else {
+  }
+}
+$(document).on("click", ".service-card", function (e) {
+  e.stopPropagation();
+  var id = $(this).data("id");
+  let item_service = group_service.find((c) => c.id == id);
+  $(".checkview_click").removeClass("active");
+  $(this).addClass("active");
+  try {
+    load_infor_service(item_service);
+  } catch (error) {}
+});
+
+function load_infor_service(module) {
+  $(".load_service_cl").css("display", "none");
+  let user_url = $(".user_url").val();
+  $(".user_url_site").text(user_url);
+  let email = $(".email_site").val();
+  $(".user_email").text(email);
+  try {
+    $(".current-package-requested").text(
+      module.status == "Đang hoạt động" ? "Ngừng kích hoạt" : "Đang hoạt động"
+    );
+  } catch (error) {}
+  $(".name_service").text(module.name);
+  $(".updated_at").text(module.updated_at);
+  $(".end_date").text(module.end_date);
+  $(".start_date").text(module.start_date);
+  let list_module = module.list_module;
+  $(".module-list").html("");
+  $(".seting_view").html("");
+
+  $.each(list_module, (k, i) => {
+    let html = `<div class="module-items" style="width: 140px;"> 
+                            <div style="width: 32px;"> ${i.image}</div>
+                            <span class="fs-8"> ${i.name}</span>
+                    </div>`;
+    $(".module-list").append(html);
+
+    let html2 = `<div class="setting-items col-md-4" style="width: 140px;background: white;"> 
+                           ${checkinfor(i)}
+                        </div>`;
+    $(".seting_view").append(html2);
+  });
+}
+
+function checkinfor(item) {
+  let html = `
+        <div class="text-start">
+        <div style="width:42px">${item.image}</div>`;
+  $.each(item, (k, i) => {
+    if (
+      ![
+        "service_id",
+        "service_name",
+        "image",
+        "service_category",
+        "key_service",
+        "is_active",
+        "service_description_long",
+      ].includes(k)
+    ) {
+      html += name_value(k, i);
+    }
+  });
+  html += `</div>`;
+  return html;
+}
+
+function name_value(name, value) {
+  switch (name) {
+    case "customer_count":
+      name = "Kích hoạt Số lượng khách hàng";
+      break;
+    case "data_count":
+      name = "Kích hoạt lưu trữ";
+      break;
+    case "page_count":
+      name = "Kích hoạt trang kết nối";
+      break;
+    case "total_account":
+      name = "Kích hoạt số lượng tài khoản";
+      break;
+    case "service_description":
+      name = "Mô tả ngắn";
+      break;
+    default:
+      break;
+  }
+  let html = ``;
+  if (value) {
+    if (value == "0") value = "Không giới hạn";
+    html = `<div class="section-modules-items">
+                    <i class="fa-solid fa-circle-check" style="color: #279b59;"></i>
+                    <span>${name}:${value}</span>
+                </div>`;
+  }
+  return html;
+}
+
+function formatPrice(price) {
+  try {
+    return Number(price).toLocaleString();
+    // new Intl.NumberFormat('vi-VN').format(parseInt(price));
+  } catch (error) {
+    return "không hổ trợ";
+  }
+}
+
+function rename_status(name) {
+  let text = "";
+  switch (name) {
+    case "account_roles":
+      text = "Người dùng được phân quyền";
+      break;
+    case "all_account":
+      text = "Tất cả người dùng";
+      break;
+    case "all_user":
+      text = "Tất cả nhân viên";
+      break;
+    default:
+      break;
+  }
+  return text;
+}
+
+// tab 2
+
+let list_service_group = [];
+let list_service_trueads = [];
+load_data();
+async function load_data() {
+  await loadServicesTrueAds();
+  load_service_group();
+}
+async function loadServicesTrueAds() {
+  const res = await fetch("https://trueads.ai/wp-json/api/v1/services-trueads");
+  const response = await res.json();
+  list_service_trueads = response.data;
+}
+
+async function load_service_group() {
+  const res = await fetch(
+    "https://trueads.ai/wp-json/api/v1/get-service-group"
+  );
+  const response = await res.json();
+  if (response.success) {
+    list_service_group = response.data;
+    $.each(response.data, (key, i) => {
+      const formattedPrice = formatPrice(i.price);
+      const formattedSalePrice = formatPrice(i.price_sale);
+      let html = `
+                <div class="service-box card">
+                <div>
+                    <div class="item_service">
+                            <span style="font-size:20px; text-align:left; font-weight:600;">${
+                              i.name
+                            }</span>
+                            <div>
+                            <div><i class="fa-solid fa-tags"></i> Giá: ${formattedPrice} VNĐ</div>
+                            <div><i class="fa-solid fa-badge-percent"></i> Khuyến mãi: ${formattedSalePrice} VNĐ</div>
+                            <div> <i class="fas fa-globe"></i> Hết hạn: ${
+                              i.day_active
+                            } Ngày</div>
+                            <p style="width:100%; text-align:left;">Mô tả: ${
+                              i.description
+                            }</p>
+                            </div>
+                    </div>
+                    <div class="item-module">
+                        ${view_module(i)}
+                    </div>
+                    </div>
+                    <div class="buttons">
+                        <button type="button" onclick='regisServices(${JSON.stringify(
+                          i
+                        )});' data-id="${
+        i.id
+      }" class="btn btn-outline-primary update_services_group_btn"
+                             data-id="${i.service_id}">
+                            Liên hệ: 0347 348 668
+                        </button>
+                       
+                    </div>
+                </div>
+            `;
+      $(".list_group_service").append(html);
+    });
+  }
+}
+function regisServices(params) {
+  console.log(params);
+}
+function view_module(item) {
+  let list_module = item.list_module;
+  let html = ``;
+  $.each(list_module, (k, i) => {
+    let item_m = list_service_trueads.find(
+      (c) => Number(c.service_id) == Number(i.id)
+    );
+
+    html += `
+                    <div class="service-card">
+                        <div class="item_service" style="display: flex; align-items: center; gap:5px; margin-bottom:10px; overflow:hidden;">
+                            <div class="service-icon" style="min-width: 30px; min-height: 30px;">
+                                ${item_m.image}
+                            </div>
+                            <div style="font-size:16px;font-weight:550; white-space:nowrap;text-overflow:ellipsis;overflow:hidden;">
+                                ${item_m.service_name}
+                               
+                            </div>
+                        </div>
+                        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+                        ${
+                          item_m.page_count
+                            ? `<div><i class="fas fa-globe"></i> ${item_m.page_count}</div>`
+                            : ``
+                        }
+                        ${
+                          item_m.data_count
+                            ? `<div><i class="fas fa-database"></i> ${item_m.data_count}</div>`
+                            : ``
+                        }
+                        </div>
+                    </div>
+                `;
+  });
+  return html;
+}

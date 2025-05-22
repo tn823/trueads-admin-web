@@ -1,0 +1,90 @@
+function boxupview(message, success = true) {
+    if ($(".custom-toast-container").length === 0) {
+        $("body").append(`<div class="custom-toast-container" style="
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 10px;
+            z-index: 9999;
+        "></div>`);
+    }
+
+    const bgColor = success ? "#27ae60" : "#c0392b";
+    const box = $(`<div style="
+        background: ${bgColor};
+        color: #fff;
+        padding: 10px 16px;
+        border-radius: 6px;
+        min-width: 200px;
+        max-width: 300px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.4s ease;
+    ">${message}</div>`);
+
+    $(".custom-toast-container").append(box);
+
+    setTimeout(() => {
+        box.css({
+            opacity: "1",
+            transform: "translateY(0)"
+        });
+    }, 10);
+
+    setTimeout(() => {
+        box.css({
+            opacity: "0",
+            transform: "translateY(20px)"
+        });
+        setTimeout(() => box.remove(), 500);
+    }, 3000);
+}
+get_logged_in_user_info();
+async function get_logged_in_user_info() {
+    let currentUser = JSON.parse(localStorage.getItem('logged_in_user_info'));
+    if (currentUser) {
+        return currentUser;
+    }
+    let response = await AjaxData({
+        action: 'get_logged_in_user_info'
+    }, 'post');
+    if (response.success) {
+        localStorage.setItem('logged_in_user_info', JSON.stringify(response.data));
+    }
+    return null;
+}
+
+function toggleLoading() {
+    return {
+        open: function() {
+            $(".loading-page").show();
+
+        },
+        close: function() {
+            $(".loading-page").hide();
+        }
+    };
+}
+
+// Gọi
+let loader = toggleLoading();
+loader.open();
+loader.close();
+toggleLoading().close();
+
+
+function get_site_host() {
+    let hostname = window.location.hostname;
+    let protocol = window.location.protocol;
+    let pathname = window.location.pathname;
+    let site_host = window.location.origin;
+    if (hostname === "localhost" || hostname === "127.0.0.1") {
+        let subDirectory = pathname.split("/")[2];
+        site_host = `${protocol}//${hostname}/trueadsai/${subDirectory}`;
+    }
+    return site_host;
+}
